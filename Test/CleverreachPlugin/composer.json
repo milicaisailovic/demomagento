@@ -1,9 +1,9 @@
 {
-    "name": "milica/demomagento",
-    "type": "project",
+    "name": "milica/cleverreach-plugin",
+    "type": "magento2-module",
     "autoload": {
         "psr-4": {
-            "Demomagento\\": "Test/CleverreachPlugin"
+            "Test\\CleverreachPlugin\\": ""
         }
     },
     "authors": [
