@@ -1,0 +1,16 @@
+{
+    "name": "milica/demomagento",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Demomagento\\": "Test/CleverreachPlugin"
+        }
+    },
+    "authors": [
+        {
+            "name": "Milica Isailovic",
+            "email": "milica.isailovic@logeecom.com"
+        }
+    ],
+    "require": {}
+}
