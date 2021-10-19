@@ -13,7 +13,9 @@
             Connect, sync customer data and create appealing emails to showcase your products to your customers.
         </div>
         <div class="buttonDiv">
-            <button class="connectButton"> Connect </button>
+            <a href="<?= $block->escapeHtml($block->getLoginPageUrl()); ?>">
+                <button class="connectButton"> Connect </button>
+            </a>
         </div>
     </div>
 </div>

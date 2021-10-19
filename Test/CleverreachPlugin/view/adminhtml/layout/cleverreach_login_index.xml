@@ -9,7 +9,10 @@
     </head>
     <body>
     <referenceContainer name="content">
-        <block class="Magento\Backend\Block\Template" template="Test_CleverreachPlugin::login.phtml"/>
+        <block class="Test\CleverreachPlugin\Block\LoginBlock"
+               name="loginBlock"
+               template="Test_CleverreachPlugin::login.phtml"
+        />
     </referenceContainer>
     </body>
 </page>

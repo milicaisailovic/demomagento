@@ -11,7 +11,7 @@
              resource="Test_CleverreachPlugin::cleverreach"
         />
         <add id="Test_CleverreachPlugin::cleverreach_login"
-             title=""
+             title="Login"
              translate="title"
              module="Test_CleverreachPlugin"
              parent="Test_CleverreachPlugin::cleverreach"
