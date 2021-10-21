@@ -19,7 +19,7 @@ class CleverReachRepository
         $this->resourceEntity->setToken($clientId, $token);
     }
 
-    public function getToken(string $clientId) : string
+    public function getToken(string $clientId) : ?string
     {
         return $this->resourceEntity->getToken($clientId);
     }

@@ -2,9 +2,10 @@
 
 namespace Test\CleverreachPlugin\Http;
 
+use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
+
 class AuthorizationProxy extends Proxy
 {
-    const TOKEN_URL = "https://rest.cleverreach.com/oauth/token.php";
 
     public function verify(string $clientId, string $clientSecret, string $code, string $redirectUri) : string
     {
@@ -14,6 +15,6 @@ class AuthorizationProxy extends Proxy
         $fields["grant_type"] = "authorization_code";
         $fields["code"] = $code;
 
-        return $this->post(self::TOKEN_URL, $fields);
+        return $this->post(CleverReachConfig::TOKEN_URL, $fields);
     }
 }

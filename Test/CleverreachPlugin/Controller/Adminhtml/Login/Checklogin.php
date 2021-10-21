@@ -12,7 +12,7 @@ use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 /**
  * Class Index
  */
-class Index extends Action implements HttpGetActionInterface
+class Checklogin extends Action implements HttpGetActionInterface
 {
 
     /**
@@ -35,22 +35,11 @@ class Index extends Action implements HttpGetActionInterface
         $this->resultPageFactory = $resultPageFactory;
     }
 
-    /**
-     *
-     * @return Page
-     */
-    public function execute() : Page
+    public function execute()
     {
-        $resultPage = $this->resultPageFactory->create();
-        $authorizationService =  new AuthorizationService();
+        $authorizationService = new AuthorizationService();
         $token = $authorizationService->get(CleverReachConfig::CLIENT_ID);
 
-        if($token !== null) {
-            $this->_redirect('cleverreach/dashboard/index');
-        }
-
-        $resultPage->getConfig()->getTitle()->prepend(__(''));
-        $resultPage->setActiveMenu(CleverReachConfig::MENU_ID);
-        return $resultPage;
+        echo $token !== null;
     }
 }

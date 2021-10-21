@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\CleverreachPlugin\Service;
+namespace Test\CleverreachPlugin\Service\Authorization;
 
 use Test\CleverreachPlugin\Repository\CleverReachRepository;
 
@@ -13,7 +13,7 @@ class AuthorizationService
         $this->repository = new CleverReachRepository();
     }
 
-    public function get(string $clientId) : string
+    public function get(string $clientId) : ?string
     {
         return $this->repository->getToken($clientId);
     }
@@ -29,6 +29,6 @@ class AuthorizationService
         $className = strtolower(end($classRoute));
         $classDirectory = strtolower(prev($classRoute));
 
-        return $siteUrl . '/test/' . $classDirectory . '/' . $className;
+        return $siteUrl . '/front/' . $classDirectory . '/' . $className;
     }
 }
