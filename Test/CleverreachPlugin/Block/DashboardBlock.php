@@ -20,4 +20,9 @@ class DashboardBlock extends Template
     {
         return CleverReachConfig::CLIENT_ID;
     }
+
+    public function getSynchronizationUrl() : string
+    {
+        return $this->getUrl('cleverreach/dashboard/synchronization');
+    }
 }

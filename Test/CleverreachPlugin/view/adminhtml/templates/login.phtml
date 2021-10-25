@@ -4,7 +4,8 @@
     </div>
     <div class="content">
         <div>
-            <img src="<?= $this->getViewFileUrl('Test_CleverreachPlugin::images/icon_quickstartmailing.svg');?>" class="iconStartMailing" />
+            <img src="<?= $this->getViewFileUrl('Test_CleverreachPlugin::images/icon_quickstartmailing.svg');?>"
+                 class="iconStartMailing" />
         </div>
         <div class="title">
             Welcome to CleverReach
@@ -23,6 +24,7 @@
 </div>
 
 <script>
+    localStorage.removeItem('initialSyncDone');
     let checkLoginCall;
     function openCleverReachPopUp(url, checkUrl, redirectUrl) {
         window.open(url, '_blank', 'location=yes,height=570,width=900,scrollbars=yes,status=yes');

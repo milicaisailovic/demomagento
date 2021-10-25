@@ -9,9 +9,13 @@
     </div>
     <div class="status">
         <div>Sync Status:</div>
-        <div class="statusValue">Done</div>
+        <div class="statusProgress" id="statusValue">In progress</div>
     </div>
     <div class="buttonDiv">
         <button class="connectButton"> Synchronize </button>
     </div>
 </div>
+<input type="hidden" value="<?= $block->getSynchronizationUrl(); ?>" id="syncUrl">
+<script>
+    window.onload = initialSync();
+</script>

@@ -36,6 +36,7 @@ class Index extends Action implements HttpGetActionInterface
     }
 
     /**
+     * Render CleverReach landing page if token doesn't exists.
      *
      * @return Page
      */
@@ -43,7 +44,7 @@ class Index extends Action implements HttpGetActionInterface
     {
         $resultPage = $this->resultPageFactory->create();
         $authorizationService =  new AuthorizationService();
-        $token = $authorizationService->get(CleverReachConfig::CLIENT_ID);
+        $token = $authorizationService->get();
 
         if($token !== null) {
             $this->_redirect('cleverreach/dashboard/index');
@@ -51,6 +52,7 @@ class Index extends Action implements HttpGetActionInterface
 
         $resultPage->getConfig()->getTitle()->prepend(__(''));
         $resultPage->setActiveMenu(CleverReachConfig::MENU_ID);
+
         return $resultPage;
     }
 }

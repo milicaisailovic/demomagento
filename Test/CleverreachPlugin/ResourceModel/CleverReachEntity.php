@@ -19,22 +19,31 @@ class CleverReachEntity extends AbstractDb
         $this->tableName = $this->connection->getTableName(self::TABLE_NAME);
     }
 
-    public function setToken(string $clientId, string $token) : void
+    /**
+     * Select value for forwarded name
+     *
+     * @param string $field
+     *
+     * @return string|null
+     */
+    public function select(string $field): ?string
     {
-        $data = ['client_id' => $clientId, 'access_token' => $token];
-        if($this->getToken($clientId) !== null) {
-            $this->connection->update($this->tableName, $data, [self::TABLE_NAME . '.client_id = ?' => $clientId]);
-        } else {
-            $this->connection->insert($this->tableName, $data);
-        }
+        $select = $this->connection->select()->from($this->tableName, 'value')
+            ->where(self::TABLE_NAME . '.name = ?', $field);
+        $result = $this->connection->fetchOne($select);
+
+        return !empty($result) ? $result : null;
     }
 
-    public function getToken(string $clientId) : ?string
+    /**
+     * Insert value for forwarded name
+     *
+     * @param string $name
+     * @param string $value
+     */
+    public function insert(string $name, string $value): void
     {
-        $select = $this->connection->select()->from($this->tableName, 'access_token')
-            ->where(self::TABLE_NAME . '.client_id = ?', $clientId);
-        $result = $this->connection->fetchRow($select);
-
-        return !empty($result) ? (string) $result['access_token'] : null;
+        $data = ['name' => $name, 'value' => $value];
+        $this->connection->insertOnDuplicate($this->tableName, $data);
     }
 }

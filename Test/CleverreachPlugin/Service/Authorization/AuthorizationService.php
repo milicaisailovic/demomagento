@@ -8,21 +8,42 @@ class AuthorizationService
 {
     private CleverReachRepository $repository;
 
+    /**
+     * AuthorizationService constructor.
+     */
     public function __construct()
     {
         $this->repository = new CleverReachRepository();
     }
 
-    public function get(string $clientId) : ?string
+    /**
+     * Get token from repository, or null if token doesn't exist.
+     *
+     * @return string|null
+     */
+    public function get() : ?string
     {
-        return $this->repository->getToken($clientId);
+        return $this->repository->getToken();
     }
 
-    public function set(string $clientId, string $token) : void
+    /**
+     * Set token in repository.
+     *
+     * @param string $token
+     */
+    public function set(string $token) : void
     {
-        $this->repository->setToken($clientId, $token);
+        $this->repository->setToken($token);
     }
 
+    /**
+     * Create redirect URL after authorization.
+     *
+     * @param string $siteUrl
+     * @param string $class
+     *
+     * @return string
+     */
     public function getRedirectUri(string $siteUrl, string $class) : string
     {
         $classRoute = explode("\\", $class);

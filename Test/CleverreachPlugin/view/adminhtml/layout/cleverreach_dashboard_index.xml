@@ -3,6 +3,8 @@
     <head>
         <css src="Test_CleverreachPlugin::css/landingPage.css"/>
         <css src="Test_CleverreachPlugin::css/dashboard.css"/>
+        <script src="Test_CleverreachPlugin::js/AjaxService.js"/>
+        <script src="Test_CleverreachPlugin::js/Synchronization.js"/>
     </head>
     <body>
         <referenceContainer name="content">

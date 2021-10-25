@@ -11,13 +11,12 @@ use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 /**
  * Class Index
  */
-
 class Index extends \Magento\Framework\App\Action\Action
 {
     protected PageFactory $_pageFactory;
 
     public function __construct(
-        Context $context,
+        Context     $context,
         PageFactory $pageFactory)
     {
         $this->_pageFactory = $pageFactory;
@@ -34,12 +33,12 @@ class Index extends \Magento\Framework\App\Action\Action
             CleverReachConfig::CLIENT_SECRET, $_GET['code'], $redirectUri);
         $responseDecoded = json_decode($response, true);
 
-        if(array_key_exists('access_token', $responseDecoded)) {
-            $authorizationService->set(CleverReachConfig::CLIENT_ID, $responseDecoded['access_token']);
+        if (array_key_exists('access_token', $responseDecoded)) {
+            $authorizationService->set($responseDecoded['access_token']);
 
             return $this->_pageFactory->create();
 
-        } elseif(array_key_exists('error', $responseDecoded)) {
+        } elseif (array_key_exists('error', $responseDecoded)) {
             echo 'cUrl error: ' . $responseDecoded['error'];
         }
 

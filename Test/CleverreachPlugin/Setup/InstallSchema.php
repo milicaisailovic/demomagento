@@ -22,8 +22,7 @@ class InstallSchema implements InstallSchemaInterface
         $installer = $setup;
         $installer->startSetup();
         $tableName = $installer->getTable('cleverreach_entity');
-        if($installer->getConnection()->isTableExists($tableName) !== true)
-        {
+        if ($installer->getConnection()->isTableExists($tableName) !== true) {
             $table = $installer->getConnection()
                 ->newTable($tableName)
                 ->addColumn(
@@ -38,21 +37,27 @@ class InstallSchema implements InstallSchemaInterface
                     ],
                     'ID'
                 )->addColumn(
-                    'client_id',
+                    'name',
                     Table::TYPE_TEXT,
-                    null,
+                    255,
                     [
                         'default' => null
-                    ],
-                    'Client ID'
+                    ]
+                )->addIndex(
+                    $installer->getIdxName(
+                        $installer->getTable($tableName),
+                        ['name'],
+                        \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE
+                    ),
+                    ['name'],
+                    ['type' => \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE]
                 )->addColumn(
-                    'access_token',
+                    'value',
                     Table::TYPE_TEXT,
                     null,
                     [
                         'default' => null
-                    ],
-                    'Value of access token'
+                    ]
                 )->setOption('type', 'InnoDB')
                 ->setOption('charset', 'utf8');
 

@@ -14,13 +14,43 @@ class CleverReachRepository
         $this->resourceEntity = ObjectManager::getInstance()->create(CleverReachEntity::class);
     }
 
-    public function setToken(string $clientId, string $token) : void
+    /**
+     * Set access token in database
+     *
+     * @param string $token
+     */
+    public function setToken(string $token) : void
     {
-        $this->resourceEntity->setToken($clientId, $token);
+        $this->resourceEntity->insert('accessToken', $token);
     }
 
-    public function getToken(string $clientId) : ?string
+    /**
+     * Get access token from database
+     *
+     * @return string|null
+     */
+    public function getToken() : ?string
     {
-        return $this->resourceEntity->getToken($clientId);
+        return $this->resourceEntity->select('accessToken');
+    }
+
+    /**
+     * Set information for created group
+     *
+     * @param string $groupInfo
+     */
+    public function setGroupInfo(string $groupInfo) : void
+    {
+        $this->resourceEntity->insert('groupInfo', $groupInfo);
+    }
+
+    /**
+     * Get information for group
+     *
+     * @return array
+     */
+    public function getGroupInfo(): array
+    {
+        return json_decode($this->resourceEntity->select('groupInfo'), true);
     }
 }
