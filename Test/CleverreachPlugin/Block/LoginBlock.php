@@ -9,18 +9,23 @@ use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 
 class LoginBlock extends Template
 {
+    private AuthorizationService $authorizationService;
+
     /**
      * LoginBlock constructor.
      *
      * @param Context $context
+     * @param AuthorizationService $authorizationService
      * @param array $data
      */
     public function __construct(
-        Context $context,
-        array   $data = []
+        Context              $context,
+        AuthorizationService $authorizationService,
+        array                $data = []
     )
     {
         parent::__construct($context, $data);
+        $this->authorizationService = $authorizationService;
     }
 
     /**
@@ -30,8 +35,7 @@ class LoginBlock extends Template
      */
     public function getLoginPageUrl(): string
     {
-        $authorizationService = new AuthorizationService();
-        $redirectUri = $authorizationService->getRedirectUri();
+        $redirectUri = $this->authorizationService->getRedirectUri();
 
         return CleverReachConfig::AUTHORIZE_URL . '?client_id=' . CleverReachConfig::CLIENT_ID
             . '&grant=basic&response_type=code&redirect_uri=' . urlencode($redirectUri);

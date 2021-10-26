@@ -21,20 +21,25 @@ class Checklogin extends Action implements HttpGetActionInterface
      */
     protected PageFactory $resultPageFactory;
 
+    private AuthorizationService $authorizationService;
+
     /**
      * Index constructor.
      *
      * @param Context $context
      * @param PageFactory $resultPageFactory
+     * @param AuthorizationService $authorizationService
      */
     public function __construct(
-        Context     $context,
-        PageFactory $resultPageFactory
+        Context              $context,
+        PageFactory          $resultPageFactory,
+        AuthorizationService $authorizationService
     )
     {
         parent::__construct($context);
 
         $this->resultPageFactory = $resultPageFactory;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
@@ -44,9 +49,7 @@ class Checklogin extends Action implements HttpGetActionInterface
      */
     public function execute()
     {
-        $authorizationService = new AuthorizationService();
-        $token = $authorizationService->get();
-
+        $token = $this->authorizationService->get();
         echo $token !== null;
     }
 }

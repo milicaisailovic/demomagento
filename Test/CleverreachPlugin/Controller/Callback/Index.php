@@ -16,6 +16,8 @@ class Index extends Action
 {
     protected PageFactory $_pageFactory;
 
+    private AuthorizationService $authorizationService;
+
     /**
      * Callback index constructor.
      *
@@ -23,11 +25,14 @@ class Index extends Action
      * @param PageFactory $pageFactory
      */
     public function __construct(
-        Context     $context,
-        PageFactory $pageFactory)
+        Context              $context,
+        PageFactory          $pageFactory,
+        AuthorizationService $authorizationService
+    )
     {
-        $this->_pageFactory = $pageFactory;
         parent::__construct($context);
+        $this->_pageFactory = $pageFactory;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
@@ -37,9 +42,7 @@ class Index extends Action
      */
     public function execute()
     {
-        $authorizationService = new AuthorizationService();
-
-        $response = $authorizationService->verify($_GET['code']);
+        $response = $this->authorizationService->verify($_GET['code']);
         $responseDecoded = json_decode($response, true);
 
         if (array_key_exists('error', $responseDecoded)) {
@@ -48,7 +51,7 @@ class Index extends Action
             return '';
         }
 
-        $authorizationService->set($responseDecoded['access_token']);
+        $this->authorizationService->set($responseDecoded['access_token']);
 
         return $this->_pageFactory->create();
     }

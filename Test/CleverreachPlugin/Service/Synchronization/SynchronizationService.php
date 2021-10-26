@@ -14,18 +14,27 @@ class SynchronizationService
     private CustomerRepository $customerRepository;
     private SubscriberRepository $subscriberRepository;
     private CleverReachRepository $cleverReachRepository;
-
-    private SynchronizationProxy $apiProxy;
+    private SynchronizationProxy $synchronizationProxy;
 
     /**
      * SynchronizationService constructor.
+     *
+     * @param CleverReachRepository $cleverReachRepository
+     * @param SubscriberRepository $subscriberRepository
+     * @param CustomerRepository $customerRepository
+     * @param SynchronizationProxy $synchronizationProxy
      */
-    public function __construct()
+    public function __construct(
+        CleverReachRepository $cleverReachRepository,
+        SubscriberRepository  $subscriberRepository,
+        CustomerRepository    $customerRepository,
+        SynchronizationProxy  $synchronizationProxy
+    )
     {
-        $this->customerRepository = new CustomerRepository();
-        $this->subscriberRepository = new SubscriberRepository();
-        $this->cleverReachRepository = new CleverReachRepository();
-        $this->apiProxy = new SynchronizationProxy();
+        $this->customerRepository = $customerRepository;
+        $this->subscriberRepository = $subscriberRepository;
+        $this->cleverReachRepository = $cleverReachRepository;
+        $this->synchronizationProxy = $synchronizationProxy;
     }
 
     /**
@@ -35,7 +44,7 @@ class SynchronizationService
      */
     public function createGroup(string $groupName): void
     {
-        $groupInfoSerialized = $this->apiProxy->createGroup($groupName);
+        $groupInfoSerialized = $this->synchronizationProxy->createGroup($groupName);
         $data = new CleverReachInformation(CleverReachConfig::GROUP_INFO_NAME, $groupInfoSerialized);
         $this->cleverReachRepository->set($data);
     }
@@ -103,7 +112,7 @@ class SynchronizationService
         $groupInfo = $this->getGroupInfo()->getValue();
         $groupId = json_decode($groupInfo, true)['id'];
 
-        return $this->apiProxy->sendReceivers($receivers, $groupId);
+        return $this->synchronizationProxy->sendReceivers($receivers, $groupId);
     }
 
     /**

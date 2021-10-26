@@ -12,10 +12,14 @@ class SynchronizationProxy extends Proxy
 
     /**
      * SynchronizationProxy constructor.
+     *
+     * @param CleverReachRepository $cleverReachRepository
      */
-    public function __construct()
+    public function __construct(
+        CleverReachRepository $cleverReachRepository
+    )
     {
-        $this->cleverReachRepository = new CleverReachRepository();
+        $this->cleverReachRepository = $cleverReachRepository;
     }
 
     /**

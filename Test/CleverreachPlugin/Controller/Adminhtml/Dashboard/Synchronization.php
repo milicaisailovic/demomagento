@@ -22,14 +22,16 @@ class Synchronization extends Action implements HttpGetActionInterface
      *
      * @param Context $context
      * @param JsonFactory $resultJsonFactory
+     * @param SynchronizationService $synchronizationService
      */
     public function __construct(
-        Context     $context,
-        JsonFactory $resultJsonFactory
+        Context                $context,
+        JsonFactory            $resultJsonFactory,
+        SynchronizationService $synchronizationService
     )
     {
         parent::__construct($context);
-        $this->synchronizationService = new SynchronizationService();
+        $this->synchronizationService = $synchronizationService;
         $this->resultJsonFactory = $resultJsonFactory;
     }
 

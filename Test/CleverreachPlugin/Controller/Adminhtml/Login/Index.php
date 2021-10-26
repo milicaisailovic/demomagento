@@ -20,20 +20,25 @@ class Index extends Action implements HttpGetActionInterface
      */
     protected PageFactory $resultPageFactory;
 
+    private AuthorizationService $authorizationService;
+
     /**
      * Index constructor.
      *
      * @param Context $context
      * @param PageFactory $resultPageFactory
+     * @param AuthorizationService $authorizationService
      */
     public function __construct(
-        Context     $context,
-        PageFactory $resultPageFactory
+        Context              $context,
+        PageFactory          $resultPageFactory,
+        AuthorizationService $authorizationService
     )
     {
         parent::__construct($context);
 
         $this->resultPageFactory = $resultPageFactory;
+        $this->authorizationService = $authorizationService;
     }
 
     /**
@@ -44,8 +49,7 @@ class Index extends Action implements HttpGetActionInterface
     public function execute(): Page
     {
         $resultPage = $this->resultPageFactory->create();
-        $authorizationService = new AuthorizationService();
-        $token = $authorizationService->get();
+        $token = $this->authorizationService->get();
 
         if ($token !== null) {
             $this->_redirect('cleverreach/dashboard/index');

@@ -14,11 +14,17 @@ class AuthorizationService
 
     /**
      * AuthorizationService constructor.
+     *
+     * @param CleverReachRepository $cleverReachRepository
+     * @param AuthorizationProxy $authorizationProxy
      */
-    public function __construct()
+    public function __construct(
+        CleverReachRepository $cleverReachRepository,
+        AuthorizationProxy    $authorizationProxy
+    )
     {
-        $this->repository = new CleverReachRepository();
-        $this->proxy = new AuthorizationProxy();
+        $this->repository = $cleverReachRepository;
+        $this->proxy = $authorizationProxy;
     }
 
     /**
