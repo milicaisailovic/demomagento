@@ -38,6 +38,33 @@ class CustomerEntity extends AbstractDb
     }
 
     /**
+     * Insert customer into database with forwarded fields.
+     *
+     * @param string $email
+     * @param string $firstname
+     * @param string $lastname
+     */
+    public function upsert(string $email, string $firstname, string $lastname): void
+    {
+        $data = ['email' => $email, 'firstname' => $firstname, 'lastname' => $lastname];
+        $this->connection->insertOnDuplicate($this->tableName, $data);
+    }
+
+    /**
+     * For forwarded customer ID, update row in database.
+     *
+     * @param int $id
+     * @param string $email
+     * @param string $firstname
+     * @param string $lastname
+     */
+    public function update(int $id, string $email, string $firstname, string $lastname): void
+    {
+        $data = ['email' => $email, 'firstname' => $firstname, 'lastname' => $lastname];
+        $this->connection->update($this->tableName, $data, ['id = ?' => $id]);
+    }
+
+    /**
      * Return number of rows in customer table.
      *
      * @return int

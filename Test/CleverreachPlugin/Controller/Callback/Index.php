@@ -2,19 +2,26 @@
 
 namespace Test\CleverreachPlugin\Controller\Callback;
 
+use Magento\Framework\App\Action\Action;
 use Magento\Framework\App\Action\Context;
+use Magento\Framework\Controller\ResultInterface;
+use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
-use Test\CleverreachPlugin\Http\AuthorizationProxy;
 use Test\CleverreachPlugin\Service\Authorization\AuthorizationService;
-use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 
 /**
  * Class Index
  */
-class Index extends \Magento\Framework\App\Action\Action
+class Index extends Action
 {
     protected PageFactory $_pageFactory;
 
+    /**
+     * Callback index constructor.
+     *
+     * @param Context $context
+     * @param PageFactory $pageFactory
+     */
     public function __construct(
         Context     $context,
         PageFactory $pageFactory)
@@ -23,25 +30,26 @@ class Index extends \Magento\Framework\App\Action\Action
         parent::__construct($context);
     }
 
+    /**
+     * Get CleverReach code, send request to API for login and save token in database if token is valid.
+     *
+     * @return Page|ResultInterface|string
+     */
     public function execute()
     {
         $authorizationService = new AuthorizationService();
-        $authorizationProxy = new AuthorizationProxy();
 
-        $redirectUri = $authorizationService->getRedirectUri(CleverReachConfig::SITE_URL, Index::class);
-        $response = $authorizationProxy->verify(CleverReachConfig::CLIENT_ID,
-            CleverReachConfig::CLIENT_SECRET, $_GET['code'], $redirectUri);
+        $response = $authorizationService->verify($_GET['code']);
         $responseDecoded = json_decode($response, true);
 
-        if (array_key_exists('access_token', $responseDecoded)) {
-            $authorizationService->set($responseDecoded['access_token']);
-
-            return $this->_pageFactory->create();
-
-        } elseif (array_key_exists('error', $responseDecoded)) {
+        if (array_key_exists('error', $responseDecoded)) {
             echo 'cUrl error: ' . $responseDecoded['error'];
+
+            return '';
         }
 
-        return '';
+        $authorizationService->set($responseDecoded['access_token']);
+
+        return $this->_pageFactory->create();
     }
 }

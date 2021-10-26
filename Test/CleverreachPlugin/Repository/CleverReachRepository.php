@@ -4,53 +4,44 @@ namespace Test\CleverreachPlugin\Repository;
 
 use Magento\Framework\App\ObjectManager;
 use Test\CleverreachPlugin\ResourceModel\CleverReachEntity;
+use Test\CleverreachPlugin\Service\DataModel\CleverReachInformation;
 
 class CleverReachRepository
 {
     protected CleverReachEntity $resourceEntity;
 
+    /**
+     * CleverReachRepository constructor.
+     */
     public function __construct()
     {
         $this->resourceEntity = ObjectManager::getInstance()->create(CleverReachEntity::class);
     }
 
     /**
-     * Set access token in database
+     * Set information in database.
      *
-     * @param string $token
+     * @param CleverReachInformation $information
      */
-    public function setToken(string $token) : void
+    public function set(CleverReachInformation $information): void
     {
-        $this->resourceEntity->insert('accessToken', $token);
+        $this->resourceEntity->upsert($information);
     }
 
     /**
-     * Get access token from database
+     * Get information from database.
      *
-     * @return string|null
+     * @param string $name
+     *
+     * @return CleverReachInformation|null
      */
-    public function getToken() : ?string
+    public function get(string $name): ?CleverReachInformation
     {
-        return $this->resourceEntity->select('accessToken');
-    }
+        $resource = $this->resourceEntity->select($name);
+        if ($resource === null) {
+            return null;
+        }
 
-    /**
-     * Set information for created group
-     *
-     * @param string $groupInfo
-     */
-    public function setGroupInfo(string $groupInfo) : void
-    {
-        $this->resourceEntity->insert('groupInfo', $groupInfo);
-    }
-
-    /**
-     * Get information for group
-     *
-     * @return array
-     */
-    public function getGroupInfo(): array
-    {
-        return json_decode($this->resourceEntity->select('groupInfo'), true);
+        return new CleverReachInformation($resource['name'], $resource['value']);
     }
 }

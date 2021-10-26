@@ -109,4 +109,15 @@ class Receiver implements \JsonSerializable
         return ['id' => $this->id, 'email' => $this->email, 'active' => $this->active,
             'global_attributes' => ['firstname' => $this->firstname, 'lastname' => $this->lastname]];
     }
+
+    /**
+     * Convert object to array.
+     *
+     * @return array
+     */
+    public function toArray(): array
+    {
+        return ['id' => $this->id, 'email' => $this->email, 'active' => $this->active,
+            'firstname' => $this->firstname, 'lastname' => $this->lastname];
+    }
 }

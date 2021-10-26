@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\CleverreachPlugin\Controller\Adminhtml\Login;
 
 use Magento\Backend\App\Action;
@@ -14,7 +15,6 @@ use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
  */
 class Index extends Action implements HttpGetActionInterface
 {
-
     /**
      * @var PageFactory
      */
@@ -27,9 +27,10 @@ class Index extends Action implements HttpGetActionInterface
      * @param PageFactory $resultPageFactory
      */
     public function __construct(
-        Context $context,
+        Context     $context,
         PageFactory $resultPageFactory
-    ) {
+    )
+    {
         parent::__construct($context);
 
         $this->resultPageFactory = $resultPageFactory;
@@ -40,13 +41,13 @@ class Index extends Action implements HttpGetActionInterface
      *
      * @return Page
      */
-    public function execute() : Page
+    public function execute(): Page
     {
         $resultPage = $this->resultPageFactory->create();
-        $authorizationService =  new AuthorizationService();
+        $authorizationService = new AuthorizationService();
         $token = $authorizationService->get();
 
-        if($token !== null) {
+        if ($token !== null) {
             $this->_redirect('cleverreach/dashboard/index');
         }
 

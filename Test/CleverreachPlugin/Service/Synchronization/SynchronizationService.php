@@ -5,6 +5,8 @@ namespace Test\CleverreachPlugin\Service\Synchronization;
 use Test\CleverreachPlugin\Repository\CleverReachRepository;
 use Test\CleverreachPlugin\Repository\CustomerRepository;
 use Test\CleverreachPlugin\Repository\SubscriberRepository;
+use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
+use Test\CleverreachPlugin\Service\DataModel\CleverReachInformation;
 use Test\CleverreachPlugin\Service\DataModel\Receiver;
 
 class SynchronizationService
@@ -12,6 +14,8 @@ class SynchronizationService
     private CustomerRepository $customerRepository;
     private SubscriberRepository $subscriberRepository;
     private CleverReachRepository $cleverReachRepository;
+
+    private SynchronizationProxy $apiProxy;
 
     /**
      * SynchronizationService constructor.
@@ -21,26 +25,29 @@ class SynchronizationService
         $this->customerRepository = new CustomerRepository();
         $this->subscriberRepository = new SubscriberRepository();
         $this->cleverReachRepository = new CleverReachRepository();
+        $this->apiProxy = new SynchronizationProxy();
     }
 
     /**
-     * Set receiver group information.
+     * Send request to API for creating new group and set receiver group information in database.
      *
-     * @param string $groupInfo
+     * @param string $groupName
      */
-    public function setGroupInfo(string $groupInfo): void
+    public function createGroup(string $groupName): void
     {
-        $this->cleverReachRepository->setGroupInfo($groupInfo);
+        $groupInfoSerialized = $this->apiProxy->createGroup($groupName);
+        $data = new CleverReachInformation(CleverReachConfig::GROUP_INFO_NAME, $groupInfoSerialized);
+        $this->cleverReachRepository->set($data);
     }
 
     /**
      * Get receiver group information.
      *
-     * @return array
+     * @return CleverReachInformation
      */
-    public function getGroupInfo(): array
+    public function getGroupInfo(): CleverReachInformation
     {
-        return $this->cleverReachRepository->getGroupInfo();
+        return $this->cleverReachRepository->get(CleverReachConfig::GROUP_INFO_NAME);
     }
 
     /**
@@ -82,6 +89,21 @@ class SynchronizationService
         $number['subscriber'] = $this->subscriberRepository->numberOfSubscribers();
 
         return $number;
+    }
+
+    /**
+     * Forward receivers to API proxy.
+     *
+     * @param array $receivers
+     *
+     * @return array Response
+     */
+    public function sendReceivers(array $receivers): array
+    {
+        $groupInfo = $this->getGroupInfo()->getValue();
+        $groupId = json_decode($groupInfo, true)['id'];
+
+        return $this->apiProxy->sendReceivers($receivers, $groupId);
     }
 
     /**

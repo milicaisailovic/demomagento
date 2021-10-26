@@ -2,6 +2,7 @@
 
 namespace Test\CleverreachPlugin\Setup;
 
+use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\Setup\InstallSchemaInterface;
 use Magento\Framework\Setup\ModuleContextInterface;
@@ -19,11 +20,10 @@ class InstallSchema implements InstallSchemaInterface
      */
     public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
     {
-        $installer = $setup;
-        $installer->startSetup();
-        $tableName = $installer->getTable('cleverreach_entity');
-        if ($installer->getConnection()->isTableExists($tableName) !== true) {
-            $table = $installer->getConnection()
+        $setup->startSetup();
+        $tableName = $setup->getTable('cleverreach_entity');
+        if ($setup->getConnection()->isTableExists($tableName) !== true) {
+            $table = $setup->getConnection()
                 ->newTable($tableName)
                 ->addColumn(
                     'id',
@@ -44,13 +44,13 @@ class InstallSchema implements InstallSchemaInterface
                         'default' => null
                     ]
                 )->addIndex(
-                    $installer->getIdxName(
-                        $installer->getTable($tableName),
+                    $setup->getIdxName(
+                        $setup->getTable($tableName),
                         ['name'],
-                        \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE
+                        AdapterInterface::INDEX_TYPE_UNIQUE
                     ),
                     ['name'],
-                    ['type' => \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE]
+                    ['type' => AdapterInterface::INDEX_TYPE_UNIQUE]
                 )->addColumn(
                     'value',
                     Table::TYPE_TEXT,
@@ -61,9 +61,9 @@ class InstallSchema implements InstallSchemaInterface
                 )->setOption('type', 'InnoDB')
                 ->setOption('charset', 'utf8');
 
-            $installer->getConnection()->createTable($table);
+            $setup->getConnection()->createTable($table);
         }
 
-        $installer->endSetup();
+        $setup->endSetup();
     }
 }

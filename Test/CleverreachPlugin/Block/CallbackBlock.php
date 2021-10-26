@@ -3,26 +3,32 @@
 namespace Test\CleverreachPlugin\Block;
 
 use Magento\Backend\Block\Template\Context;
-use Magento\Backend\Model\UrlInterface;
 use Magento\Framework\View\Element\Template;
 
 class CallbackBlock extends Template
 {
-    protected UrlInterface $url;
-
+    /**
+     * CallbackBlock constructor.
+     *
+     * @param Context $context
+     * @param array $data
+     */
     public function __construct(
-        Context   $context,
-        UrlInterface $url,
-        array     $data = []
+        Context $context,
+        array   $data = []
     )
     {
-        $this->url = $url;
         parent::__construct($context, $data);
     }
 
+    /**
+     * Get URL for dashboard page.
+     *
+     * @return string
+     */
     public function getRedirectUrl(): string
     {
-        return $this->url->getUrl('cleverreach/dashboard/index');
+        return $this->getUrl('cleverreach/dashboard/index');
     }
 }
 

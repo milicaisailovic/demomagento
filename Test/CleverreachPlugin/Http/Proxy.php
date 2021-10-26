@@ -11,7 +11,7 @@ abstract class Proxy
      *
      * @return string Response
      */
-    public function get(string $url) : string
+    public function get(string $url): string
     {
         $curl = $this->setBasicRequestOptions($url);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'GET');
@@ -27,12 +27,12 @@ abstract class Proxy
      *
      * @return string Response
      */
-    public function post(string $url, array $parameters) : string
+    public function post(string $url, array $parameters): string
     {
         $curl = $this->setBasicRequestOptions($url);
         curl_setopt($curl, CURLOPT_HTTPHEADER, array('Content-Type:application/json'));
-        curl_setopt($curl,CURLOPT_POST, sizeof($parameters));
-        curl_setopt($curl,CURLOPT_POSTFIELDS, json_encode($parameters));
+        curl_setopt($curl, CURLOPT_POST, sizeof($parameters));
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($parameters));
 
         return $this->sendRequest($curl);
     }
@@ -45,7 +45,7 @@ abstract class Proxy
      *
      * @return string Response
      */
-    public function put(string $url, array $parameters) : string
+    public function put(string $url, array $parameters): string
     {
         $curl = $this->setBasicRequestOptions($url);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'PUT');
@@ -61,7 +61,7 @@ abstract class Proxy
      *
      * @return string
      */
-    public function delete(string $url) : string
+    public function delete(string $url): string
     {
         $curl = $this->setBasicRequestOptions($url);
         curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'DELETE');
@@ -92,7 +92,7 @@ abstract class Proxy
      *
      * @return string
      */
-    private function sendRequest($curl) : string
+    private function sendRequest($curl): string
     {
         $response = curl_exec($curl);
         curl_close($curl);

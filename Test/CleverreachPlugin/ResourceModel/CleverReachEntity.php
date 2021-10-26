@@ -4,6 +4,7 @@ namespace Test\CleverreachPlugin\ResourceModel;
 
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
+use Test\CleverreachPlugin\Service\DataModel\CleverReachInformation;
 
 class CleverReachEntity extends AbstractDb
 {
@@ -12,6 +13,9 @@ class CleverReachEntity extends AbstractDb
     private AdapterInterface $connection;
     private string $tableName;
 
+    /**
+     * CleverReachEntity constructor.
+     */
     protected function _construct()
     {
         $this->_init(self::TABLE_NAME, 'id');
@@ -22,28 +26,38 @@ class CleverReachEntity extends AbstractDb
     /**
      * Select value for forwarded name
      *
-     * @param string $field
+     * @param string $name
      *
-     * @return string|null
+     * @return array|null
      */
-    public function select(string $field): ?string
+    public function select(string $name): ?array
     {
-        $select = $this->connection->select()->from($this->tableName, 'value')
-            ->where(self::TABLE_NAME . '.name = ?', $field);
-        $result = $this->connection->fetchOne($select);
+        $select = $this->connection->select()->from($this->tableName)
+            ->where(self::TABLE_NAME . '.name = ?', $name);
+        $result = $this->connection->fetchRow($select);
 
         return !empty($result) ? $result : null;
     }
 
     /**
-     * Insert value for forwarded name
+     * Insert value for forwarded name.
      *
-     * @param string $name
-     * @param string $value
+     * @param CleverReachInformation $information
      */
-    public function insert(string $name, string $value): void
+    public function upsert(CleverReachInformation $information): void
     {
-        $data = ['name' => $name, 'value' => $value];
+        $data = ['name' => $information->getName(), 'value' => $information->getValue()];
         $this->connection->insertOnDuplicate($this->tableName, $data);
+    }
+
+    /**
+     * Update value for forwarded name.
+     *
+     * @param CleverReachInformation $information
+     */
+    public function update(CleverReachInformation $information): void
+    {
+        $data = ['value' => $information->getValue()];
+        $this->connection->update($this->tableName, $data, ['name = ?' => $information->getName()]);
     }
 }

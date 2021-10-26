@@ -11,9 +11,11 @@ class CleverReachConfig
 
     const TOKEN_URL = "https://rest.cleverreach.com/oauth/token.php";
     const AUTHORIZE_URL = 'https://rest.cleverreach.com/oauth/authorize.php';
-    const SITE_URL = 'http://magento24.test';
 
     const BASE_GROUP_URL = 'https://rest.cleverreach.com/v3/groups.json';
 
     const NUMBER_OF_RECEIVERS_IN_GROUP = 50;
+
+    const ACCESS_TOKEN_NAME = 'accessToken';
+    const GROUP_INFO_NAME = 'groupInfo';
 }

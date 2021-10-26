@@ -38,6 +38,27 @@ class SubscriberEntity extends AbstractDb
     }
 
     /**
+     * Update if exists, or add new row into table.
+     *
+     * @param string $email
+     */
+    public function upsert(string $email): void
+    {
+        $this->connection->insertOnDuplicate($this->tableName, ['email' => $email]);
+    }
+
+    /**
+     * Update row with forwarded ID.
+     *
+     * @param int $id
+     * @param string $email
+     */
+    public function update(int $id, string $email): void
+    {
+        $this->connection->update($this->tableName, ['email' => $email], ['id = ?' => $id]);
+    }
+
+    /**
      * Return number of rows in subscribers table.
      *
      * @return int

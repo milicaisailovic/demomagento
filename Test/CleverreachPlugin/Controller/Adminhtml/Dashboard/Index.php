@@ -1,4 +1,5 @@
 <?php
+
 namespace Test\CleverreachPlugin\Controller\Adminhtml\Dashboard;
 
 use Magento\Backend\App\Action;
@@ -25,19 +26,21 @@ class Index extends Action implements HttpGetActionInterface
      * @param PageFactory $resultPageFactory
      */
     public function __construct(
-        Context $context,
+        Context     $context,
         PageFactory $resultPageFactory
-    ) {
+    )
+    {
         parent::__construct($context);
 
         $this->resultPageFactory = $resultPageFactory;
     }
 
     /**
+     * Return CleverReach dashboard page.
      *
      * @return Page
      */
-    public function execute() : Page
+    public function execute(): Page
     {
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu(CleverReachConfig::MENU_ID);

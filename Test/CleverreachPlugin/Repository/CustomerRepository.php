@@ -24,7 +24,7 @@ class CustomerRepository
      *
      * @return array
      */
-    public function getCustomers(int $groupNumber) : array
+    public function getCustomers(int $groupNumber): array
     {
         return $this->resourceEntity->select($groupNumber);
     }

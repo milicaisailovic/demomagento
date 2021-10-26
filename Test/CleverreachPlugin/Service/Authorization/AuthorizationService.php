@@ -2,11 +2,15 @@
 
 namespace Test\CleverreachPlugin\Service\Authorization;
 
+use Magento\Framework\App\ObjectManager;
 use Test\CleverreachPlugin\Repository\CleverReachRepository;
+use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
+use Test\CleverreachPlugin\Service\DataModel\CleverReachInformation;
 
 class AuthorizationService
 {
     private CleverReachRepository $repository;
+    private AuthorizationProxy $proxy;
 
     /**
      * AuthorizationService constructor.
@@ -14,6 +18,7 @@ class AuthorizationService
     public function __construct()
     {
         $this->repository = new CleverReachRepository();
+        $this->proxy = new AuthorizationProxy();
     }
 
     /**
@@ -21,9 +26,14 @@ class AuthorizationService
      *
      * @return string|null
      */
-    public function get() : ?string
+    public function get(): ?string
     {
-        return $this->repository->getToken();
+        $resource = $this->repository->get(CleverReachConfig::ACCESS_TOKEN_NAME);
+        if ($resource === null) {
+            return null;
+        }
+
+        return $resource->getValue();
     }
 
     /**
@@ -31,25 +41,33 @@ class AuthorizationService
      *
      * @param string $token
      */
-    public function set(string $token) : void
+    public function set(string $token): void
     {
-        $this->repository->setToken($token);
+        $this->repository->set(new CleverReachInformation(CleverReachConfig::ACCESS_TOKEN_NAME, $token));
     }
 
     /**
      * Create redirect URL after authorization.
      *
-     * @param string $siteUrl
-     * @param string $class
+     * @return string
+     */
+    public function getRedirectUri(): string
+    {
+        $objectManager = ObjectManager::getInstance();
+        $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
+
+        return $storeManager->getStore()->getBaseUrl() . 'front/callback/index';
+    }
+
+    /**
+     * Call proxy for verification.
+     *
+     * @param string $code
      *
      * @return string
      */
-    public function getRedirectUri(string $siteUrl, string $class) : string
+    public function verify(string $code): string
     {
-        $classRoute = explode("\\", $class);
-        $className = strtolower(end($classRoute));
-        $classDirectory = strtolower(prev($classRoute));
-
-        return $siteUrl . '/front/' . $classDirectory . '/' . $className;
+        return $this->proxy->verify($code);
     }
 }

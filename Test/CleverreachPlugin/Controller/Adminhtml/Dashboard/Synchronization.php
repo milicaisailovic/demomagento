@@ -7,7 +7,6 @@ use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Test\CleverreachPlugin\Http\ApiProxy;
 use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 use Test\CleverreachPlugin\Service\Exceptions\SynchronizationException;
 use Test\CleverreachPlugin\Service\Synchronization\SynchronizationService;
@@ -16,7 +15,6 @@ class Synchronization extends Action implements HttpGetActionInterface
 {
     protected JsonFactory $resultJsonFactory;
 
-    private ApiProxy $apiProxy;
     private SynchronizationService $synchronizationService;
 
     /**
@@ -31,7 +29,6 @@ class Synchronization extends Action implements HttpGetActionInterface
     )
     {
         parent::__construct($context);
-        $this->apiProxy = new ApiProxy();
         $this->synchronizationService = new SynchronizationService();
         $this->resultJsonFactory = $resultJsonFactory;
     }
@@ -44,8 +41,7 @@ class Synchronization extends Action implements HttpGetActionInterface
     public function execute(): Json
     {
         $response = $this->resultJsonFactory->create();
-        $groupInfoSerialized = $this->apiProxy->createGroup('demomagento');
-        $this->synchronizationService->setGroupInfo($groupInfoSerialized);
+        $this->synchronizationService->createGroup('demomagento');
         $numberOfReceivers = $this->synchronizationService->getNumberOfReceivers();
 
         $customerGroups = ceil($numberOfReceivers['customer'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
@@ -76,7 +72,7 @@ class Synchronization extends Action implements HttpGetActionInterface
         for ($i = 1; $i <= $numberOfGroups; $i++) {
             $receivers = ($type === 'customer') ? $this->synchronizationService->getReceiversFromCustomers($i) :
                 $this->synchronizationService->getReceiversFromSubscribers($i);
-            $response = $this->apiProxy->sendReceivers($receivers);
+            $response = $this->synchronizationService->sendReceivers($receivers);
             if (isset($response['error'])) {
                 throw new SynchronizationException($response[''], $response['status']);
             }
