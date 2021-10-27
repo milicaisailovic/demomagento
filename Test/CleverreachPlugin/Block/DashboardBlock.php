@@ -5,21 +5,27 @@ namespace Test\CleverreachPlugin\Block;
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\View\Element\Template;
 use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
+use Test\CleverreachPlugin\Service\Synchronization\SynchronizationService;
 
 class DashboardBlock extends Template
 {
+    private SynchronizationService $synchronizationService;
+
     /**
      * DashboardBlock constructor.
      *
      * @param Context $context
+     * @param SynchronizationService $synchronizationService
      * @param array $data
      */
     public function __construct(
         Context $context,
+        SynchronizationService $synchronizationService,
         array   $data = []
     )
     {
         parent::__construct($context, $data);
+        $this->synchronizationService = $synchronizationService;
     }
 
     /**
@@ -29,7 +35,7 @@ class DashboardBlock extends Template
      */
     public function getClientId(): string
     {
-        return CleverReachConfig::CLIENT_ID;
+        return $this->synchronizationService->getClientId();
     }
 
     /**

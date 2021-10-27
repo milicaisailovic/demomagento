@@ -43,4 +43,9 @@
             <argument name="synchronizationService" xsi:type="object">Test\CleverreachPlugin\Service\Synchronization\SynchronizationService</argument>
         </arguments>
     </type>
+    <type name="Test\CleverreachPlugin\Block\DashboardBlock">
+        <arguments>
+            <argument name="synchronizationService" xsi:type="object">Test\CleverreachPlugin\Service\Synchronization\SynchronizationService</argument>
+        </arguments>
+    </type>
 </config>

@@ -8,6 +8,7 @@ use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
 use Test\CleverreachPlugin\Service\Authorization\AuthorizationService;
+use Test\CleverreachPlugin\Service\Exceptions\AuthorizationException;
 
 /**
  * Class Index
@@ -23,6 +24,7 @@ class Index extends Action
      *
      * @param Context $context
      * @param PageFactory $pageFactory
+     * @param AuthorizationService $authorizationService
      */
     public function __construct(
         Context              $context,
@@ -42,17 +44,15 @@ class Index extends Action
      */
     public function execute()
     {
-        $response = $this->authorizationService->verify($_GET['code']);
-        $responseDecoded = json_decode($response, true);
+        try {
+            $this->authorizationService->verify($_GET['code']);
 
-        if (array_key_exists('error', $responseDecoded)) {
-            echo 'cUrl error: ' . $responseDecoded['error'];
+            return $this->_pageFactory->create();
+
+        } catch (AuthorizationException $exception) {
+            echo $exception->getMessage();
 
             return '';
         }
-
-        $this->authorizationService->set($responseDecoded['access_token']);
-
-        return $this->_pageFactory->create();
     }
 }

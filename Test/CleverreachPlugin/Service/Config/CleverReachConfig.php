@@ -13,6 +13,8 @@ class CleverReachConfig
     const AUTHORIZE_URL = 'https://rest.cleverreach.com/oauth/authorize.php';
 
     const BASE_GROUP_URL = 'https://rest.cleverreach.com/v3/groups.json';
+    const DEBUG_URL = 'https://rest.cleverreach.com/v3/debug/whoami.json';
+
 
     const NUMBER_OF_RECEIVERS_IN_GROUP = 50;
 

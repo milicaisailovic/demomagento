@@ -28,4 +28,16 @@ class AuthorizationProxy extends Proxy
 
         return $this->post(CleverReachConfig::TOKEN_URL, $fields);
     }
+
+    /**
+     * Send HTTP GET request for client information.
+     *
+     * @param string $token
+     *
+     * @return string
+     */
+    public function getClientAccountInformation(string $token): string
+    {
+        return $this->get(CleverReachConfig::DEBUG_URL . '?token=' . $token);
+    }
 }

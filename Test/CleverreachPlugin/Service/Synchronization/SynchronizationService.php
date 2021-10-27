@@ -38,6 +38,16 @@ class SynchronizationService
     }
 
     /**
+     * Get client account ID from database.
+     *
+     * @return int
+     */
+    public function getClientId(): int
+    {
+        return (int)json_decode($this->cleverReachRepository->get('clientInfo')->getValue(), true)['id'];
+    }
+
+    /**
      * Send request to API for creating new group and set receiver group information in database.
      *
      * @param string $groupName

@@ -6,6 +6,7 @@ use Magento\Framework\App\ObjectManager;
 use Test\CleverreachPlugin\Repository\CleverReachRepository;
 use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 use Test\CleverreachPlugin\Service\DataModel\CleverReachInformation;
+use Test\CleverreachPlugin\Service\Exceptions\AuthorizationException;
 
 class AuthorizationService
 {
@@ -70,10 +71,21 @@ class AuthorizationService
      *
      * @param string $code
      *
-     * @return string
+     * @return void
+     *
+     * @throws AuthorizationException
      */
-    public function verify(string $code): string
+    public function verify(string $code): void
     {
-        return $this->proxy->verify($code);
+        $response = $this->proxy->verify($code);
+        $responseDecoded = json_decode($response, true);
+
+        if (array_key_exists('error', $responseDecoded)) {
+            throw new AuthorizationException('cUrl error: ' . $responseDecoded['error'], 401);
+        }
+
+        $this->set($responseDecoded['access_token']);
+        $clientInfo = $this->proxy->getClientAccountInformation($responseDecoded['access_token']);
+        $this->repository->set(new CleverReachInformation('clientInfo', $clientInfo));
     }
 }
