@@ -11,7 +11,7 @@ use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 use Test\CleverreachPlugin\Service\Exceptions\SynchronizationException;
 use Test\CleverreachPlugin\Service\Synchronization\SynchronizationService;
 
-class Synchronization extends Action implements HttpGetActionInterface
+class ManualSynchronization extends Action implements HttpGetActionInterface
 {
     /**
      * @var JsonFactory
@@ -49,7 +49,6 @@ class Synchronization extends Action implements HttpGetActionInterface
     public function execute(): Json
     {
         $response = $this->resultJsonFactory->create();
-        $this->synchronizationService->createGroup('demomagento2.3');
         $numberOfReceivers = $this->synchronizationService->getNumberOfReceivers();
 
         $customerGroups = ceil($numberOfReceivers['customer'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);

@@ -4,12 +4,14 @@ namespace Test\CleverreachPlugin\Block;
 
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\View\Element\Template;
-use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 use Test\CleverreachPlugin\Service\Synchronization\SynchronizationService;
 
 class DashboardBlock extends Template
 {
-    private SynchronizationService $synchronizationService;
+    /**
+     * @var SynchronizationService
+     */
+    private $synchronizationService;
 
     /**
      * DashboardBlock constructor.
@@ -19,9 +21,9 @@ class DashboardBlock extends Template
      * @param array $data
      */
     public function __construct(
-        Context $context,
+        Context                $context,
         SynchronizationService $synchronizationService,
-        array   $data = []
+        array                  $data = []
     )
     {
         parent::__construct($context, $data);
@@ -46,5 +48,16 @@ class DashboardBlock extends Template
     public function getSynchronizationUrl(): string
     {
         return $this->getUrl('cleverreach/dashboard/synchronization');
+    }
+
+    /**
+     * Get URL for manual synchronization.
+     *
+     * @return string
+     */
+    public function getManualSynchronizationUrl(): string
+    {
+        return $this->getUrl('cleverreach/dashboard/manualsynchronization');
+
     }
 }

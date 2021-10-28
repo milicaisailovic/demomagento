@@ -19,9 +19,12 @@ class Checklogin extends Action implements HttpGetActionInterface
     /**
      * @var PageFactory
      */
-    protected PageFactory $resultPageFactory;
+    protected $resultPageFactory;
 
-    private AuthorizationService $authorizationService;
+    /**
+     * @var AuthorizationService
+     */
+    private $authorizationService;
 
     /**
      * Index constructor.

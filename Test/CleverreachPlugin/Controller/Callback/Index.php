@@ -15,9 +15,15 @@ use Test\CleverreachPlugin\Service\Exceptions\AuthorizationException;
  */
 class Index extends Action
 {
-    protected PageFactory $_pageFactory;
+    /**
+     * @var PageFactory
+     */
+    protected $_pageFactory;
 
-    private AuthorizationService $authorizationService;
+    /**
+     * @var AuthorizationService
+     */
+    private $authorizationService;
 
     /**
      * Callback index constructor.

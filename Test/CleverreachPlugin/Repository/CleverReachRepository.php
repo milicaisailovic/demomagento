@@ -8,7 +8,10 @@ use Test\CleverreachPlugin\Service\DataModel\CleverReachInformation;
 
 class CleverReachRepository
 {
-    protected CleverReachEntity $resourceEntity;
+    /**
+     * @var CleverReachEntity
+     */
+    protected $resourceEntity;
 
     /**
      * CleverReachRepository constructor.

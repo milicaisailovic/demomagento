@@ -7,7 +7,10 @@ use Test\CleverreachPlugin\ResourceModel\SubscriberEntity;
 
 class SubscriberRepository
 {
-    private SubscriberEntity $resourceEntity;
+    /**
+     * @var SubscriberEntity
+     */
+    private $resourceEntity;
 
     /**
      * SubscriberRepository constructor.

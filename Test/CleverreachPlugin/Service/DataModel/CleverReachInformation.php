@@ -4,8 +4,15 @@ namespace Test\CleverreachPlugin\Service\DataModel;
 
 class CleverReachInformation
 {
-    private string $name;
-    private string $value;
+    /**
+     * @var string
+     */
+    private $name;
+
+    /**
+     * @var string|null
+     */
+    private $value;
 
     /**
      * @param string $name

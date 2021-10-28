@@ -8,7 +8,10 @@ use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 
 class SynchronizationProxy extends Proxy
 {
-    private CleverReachRepository $cleverReachRepository;
+    /**
+     * @var CleverReachRepository
+     */
+    private $cleverReachRepository;
 
     /**
      * SynchronizationProxy constructor.

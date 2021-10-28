@@ -10,8 +10,15 @@ use Test\CleverreachPlugin\Service\Exceptions\AuthorizationException;
 
 class AuthorizationService
 {
-    private CleverReachRepository $repository;
-    private AuthorizationProxy $proxy;
+    /**
+     * @var CleverReachRepository
+     */
+    private $repository;
+
+    /**
+     * @var AuthorizationProxy
+     */
+    private $proxy;
 
     /**
      * AuthorizationService constructor.

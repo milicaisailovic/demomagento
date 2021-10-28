@@ -8,13 +8,29 @@ use Test\CleverreachPlugin\Repository\SubscriberRepository;
 use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 use Test\CleverreachPlugin\Service\DataModel\CleverReachInformation;
 use Test\CleverreachPlugin\Service\DataModel\Receiver;
+use Test\CleverreachPlugin\Service\Exceptions\SynchronizationException;
 
 class SynchronizationService
 {
-    private CustomerRepository $customerRepository;
-    private SubscriberRepository $subscriberRepository;
-    private CleverReachRepository $cleverReachRepository;
-    private SynchronizationProxy $synchronizationProxy;
+    /**
+     * @var CustomerRepository
+     */
+    private $customerRepository;
+
+    /**
+     * @var SubscriberRepository
+     */
+    private $subscriberRepository;
+
+    /**
+     * @var CleverReachRepository
+     */
+    private $cleverReachRepository;
+
+    /**
+     * @var SynchronizationProxy
+     */
+    private $synchronizationProxy;
 
     /**
      * SynchronizationService constructor.
@@ -123,6 +139,26 @@ class SynchronizationService
         $groupId = json_decode($groupInfo, true)['id'];
 
         return $this->synchronizationProxy->sendReceivers($receivers, $groupId);
+    }
+
+    /**
+     * Get receivers from database and send them to API.
+     *
+     * @param int $numberOfGroups
+     * @param string $type
+     *
+     * @throws SynchronizationException
+     */
+    public function synchronizeReceivers(int $numberOfGroups, string $type): void
+    {
+        for ($i = 1; $i <= $numberOfGroups; $i++) {
+            $receivers = ($type === 'customer') ? $this->getReceiversFromCustomers($i) :
+                $this->getReceiversFromSubscribers($i);
+            $response = $this->sendReceivers($receivers);
+            if (isset($response['error'])) {
+                throw new SynchronizationException($response[''], $response['status']);
+            }
+        }
     }
 
     /**

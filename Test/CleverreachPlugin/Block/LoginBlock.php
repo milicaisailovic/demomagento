@@ -9,7 +9,10 @@ use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 
 class LoginBlock extends Template
 {
-    private AuthorizationService $authorizationService;
+    /**
+     * @var AuthorizationService
+     */
+    private $authorizationService;
 
     /**
      * LoginBlock constructor.

@@ -7,7 +7,10 @@ use Test\CleverreachPlugin\ResourceModel\CustomerEntity;
 
 class CustomerRepository
 {
-    private CustomerEntity $resourceEntity;
+    /**
+     * @var CustomerEntity
+     */
+    private $resourceEntity;
 
     /**
      * CustomerRepository constructor.

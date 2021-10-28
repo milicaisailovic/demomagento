@@ -10,8 +10,15 @@ class SubscriberEntity extends AbstractDb
 {
     const TABLE_NAME = 'newsletter_subscriber';
 
-    private AdapterInterface $connection;
-    private string $tableName;
+    /**
+     * @var AdapterInterface
+     */
+    private $connection;
+
+    /**
+     * @var string
+     */
+    private $tableName;
 
     /**
      * SubscriberEntity constructor.

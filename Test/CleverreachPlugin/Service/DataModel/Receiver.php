@@ -4,11 +4,30 @@ namespace Test\CleverreachPlugin\Service\DataModel;
 
 class Receiver implements \JsonSerializable
 {
-    private int $id;
-    private string $email;
-    private string $firstname;
-    private string $lastname;
-    private bool $active;
+    /**
+     * @var int
+     */
+    private $id;
+
+    /**
+     * @var string
+     */
+    private $email;
+
+    /**
+     * @var string
+     */
+    private $firstname;
+
+    /**
+     * @var string
+     */
+    private $lastname;
+
+    /**
+     * @var bool
+     */
+    private $active;
 
     public function __construct(int $id, string $email, bool $active = false, string $firstname = '', string $lastname = '')
     {

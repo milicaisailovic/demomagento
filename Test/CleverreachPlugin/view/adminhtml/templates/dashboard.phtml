@@ -1,7 +1,7 @@
 <div class="landingPage">
     <div class="top">
         <div class="cleverreachLogo">
-            <img src="<?= $this->getViewFileUrl('Test_CleverreachPlugin::images/cleverreach.png'); ?>" />
+            <img src="<?= $this->getViewFileUrl('Test_CleverreachPlugin::images/cleverreach.png'); ?>"/>
         </div>
         <div class="clientId">
             Client ID: <?= $block->getClientId() ?>
@@ -12,10 +12,11 @@
         <div class="statusProgress" id="statusValue">In progress</div>
     </div>
     <div class="buttonDiv">
-        <button class="connectButton"> Synchronize </button>
+        <button class="connectButton" onclick="manualSync()"> Synchronize</button>
     </div>
 </div>
 <input type="hidden" value="<?= $block->getSynchronizationUrl(); ?>" id="syncUrl">
+<input type="hidden" value="<?= $block->getManualSynchronizationUrl(); ?>" id="manualSyncUrl">
 <script>
     window.onload = initialSync();
 </script>

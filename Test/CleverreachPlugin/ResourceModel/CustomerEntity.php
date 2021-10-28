@@ -10,8 +10,15 @@ class CustomerEntity extends AbstractDb
 {
     const TABLE_NAME = 'customer_entity';
 
-    private AdapterInterface $connection;
-    private string $tableName;
+    /**
+     * @var AdapterInterface
+     */
+    private $connection;
+
+    /**
+     * @var string
+     */
+    private $tableName;
 
     /**
      * CustomerEntity constructor.

@@ -10,8 +10,15 @@ class CleverReachEntity extends AbstractDb
 {
     const TABLE_NAME = 'cleverreach_entity';
 
-    private AdapterInterface $connection;
-    private string $tableName;
+    /**
+     * @var AdapterInterface
+     */
+    private $connection;
+
+    /**
+     * @var string
+     */
+    private $tableName;
 
     /**
      * CleverReachEntity constructor.

@@ -14,8 +14,8 @@ class CallbackBlock extends Template
      * @param array $data
      */
     public function __construct(
-        Context $context,
-        array   $data = []
+        $context,
+        array $data = []
     )
     {
         parent::__construct($context, $data);
