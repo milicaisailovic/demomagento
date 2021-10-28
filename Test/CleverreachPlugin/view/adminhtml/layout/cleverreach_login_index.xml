@@ -1,11 +1,8 @@
 <?xml version="1.0"?>
 <page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
-<!--    <referenceBlock name="page.title">-->
-<!--        <action method="setPageTitle">-->
-<!--        </action>-->
-<!--    </referenceBlock>-->
     <head>
         <css src="Test_CleverreachPlugin::css/landingPage.css"/>
+        <script src="Test_CleverreachPlugin::js/Login.js"/>
     </head>
     <body>
     <referenceContainer name="content">
