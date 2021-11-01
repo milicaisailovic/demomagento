@@ -45,6 +45,18 @@ class CustomerEntity extends AbstractDb
     }
 
     /**
+     * @param string $email
+     *
+     * @return array
+     */
+    public function selectByEmail(string $email): array
+    {
+        $query = $this->connection->select()->from($this->tableName)->where('email = ?', $email);
+
+        return $this->connection->fetchRow($query);
+    }
+
+    /**
      * Insert customer into database with forwarded fields.
      *
      * @param string $email

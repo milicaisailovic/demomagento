@@ -29,13 +29,32 @@ class Receiver implements \JsonSerializable
      */
     private $active;
 
-    public function __construct(int $id, string $email, bool $active = false, string $firstname = '', string $lastname = '')
+    /**
+     * @var int
+     */
+    private $registered;
+
+    /**
+     * @var int
+     */
+    private $deactivated;
+
+    public function __construct(
+        int    $id,
+        string $email,
+        int    $registered,
+        int    $deactivated,
+        string $firstname = '',
+        string $lastname = ''
+    )
     {
         $this->id = $id;
         $this->email = $email;
-        $this->active = $active;
+        $this->registered = $registered;
+        $this->deactivated = $deactivated;
         $this->firstname = $firstname;
         $this->lastname = $lastname;
+        $this->active = $deactivated === 0;
     }
 
     /**
@@ -68,6 +87,22 @@ class Receiver implements \JsonSerializable
     public function setEmail(string $email): void
     {
         $this->email = $email;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRegistered(): int
+    {
+        return $this->registered;
+    }
+
+    /**
+     * @param int $registered
+     */
+    public function setRegistered(int $registered): void
+    {
+        $this->registered = $registered;
     }
 
     /**
@@ -119,14 +154,40 @@ class Receiver implements \JsonSerializable
     }
 
     /**
+     * @return int
+     */
+    public function getDeactivated(): int
+    {
+        return $this->deactivated;
+    }
+
+    /**
+     * @param int $deactivated
+     */
+    public function setDeactivated(int $deactivated): void
+    {
+        $this->deactivated = $deactivated;
+    }
+
+    /**
      * Return object ready for JSON encoding.
      *
      * @return array
      */
     public function jsonSerialize(): array
     {
+        $globalAttributes = [];
+        if ($this->firstname !== '') {
+            $globalAttributes['firstname'] = $this->firstname;
+        }
+
+        if ($this->lastname !== '') {
+            $globalAttributes['lastname'] = $this->lastname;
+        }
+
         return ['id' => $this->id, 'email' => $this->email, 'active' => $this->active,
-            'global_attributes' => ['firstname' => $this->firstname, 'lastname' => $this->lastname]];
+            'registered' => $this->registered, 'deactivated' => $this->deactivated,
+            'activated' => $this->registered, 'global_attributes' => $globalAttributes];
     }
 
     /**

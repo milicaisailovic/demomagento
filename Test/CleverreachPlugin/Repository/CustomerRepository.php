@@ -41,4 +41,16 @@ class CustomerRepository
     {
         return $this->resourceEntity->count();
     }
+
+    /**
+     * Get customer from database by email.
+     *
+     * @param string $email
+     *
+     * @return array
+     */
+    public function getCustomerByEmail(string $email): array
+    {
+        return $this->resourceEntity->selectByEmail($email);
+    }
 }

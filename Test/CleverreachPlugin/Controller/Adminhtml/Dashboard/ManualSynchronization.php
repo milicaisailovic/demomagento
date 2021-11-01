@@ -49,14 +49,15 @@ class ManualSynchronization extends Action implements HttpGetActionInterface
     public function execute(): Json
     {
         $response = $this->resultJsonFactory->create();
+        $this->synchronizationService->truncateGroup();
         $numberOfReceivers = $this->synchronizationService->getNumberOfReceivers();
 
         $customerGroups = ceil($numberOfReceivers['customer'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
         $subscriberGroups = ceil($numberOfReceivers['subscriber'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
 
         try {
-            $this->synchronizationService->synchronizeReceivers($subscriberGroups, 'subscriber');
             $this->synchronizationService->synchronizeReceivers($customerGroups, 'customer');
+            $this->synchronizationService->synchronizeReceivers($subscriberGroups, 'subscriber');
 
             return $response;
         } catch (SynchronizationException $e) {

@@ -55,4 +55,29 @@ class SynchronizationProxy extends Proxy
 
         return json_decode($this->post($url, $receivers), true);
     }
+
+    /**
+     * Delete all email addresses from group with given group ID.
+     *
+     * @param int $groupId
+     */
+    public function truncateGroup(int $groupId): void
+    {
+        $url = CleverReachConfig::BASE_GROUP_URL . '/' . $groupId . '/clear?token='
+            . $this->cleverReachRepository->get(CleverReachConfig::ACCESS_TOKEN_NAME)->getValue();
+        $this->delete($url);
+    }
+
+    /**
+     * Delete receiver with forwarded email from group with forwarded group ID.
+     *
+     * @param int $groupId
+     * @param string $email
+     */
+    public function deleteReceiver(int $groupId, string $email): void
+    {
+        $url = CleverReachConfig::BASE_GROUP_URL . '/' . $groupId . '/receivers/' . $email . '?token='
+            . $this->cleverReachRepository->get(CleverReachConfig::ACCESS_TOKEN_NAME)->getValue();
+        $this->delete($url);
+    }
 }

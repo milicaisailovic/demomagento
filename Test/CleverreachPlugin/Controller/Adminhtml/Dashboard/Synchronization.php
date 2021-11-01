@@ -56,8 +56,8 @@ class Synchronization extends Action implements HttpGetActionInterface
         $subscriberGroups = ceil($numberOfReceivers['subscriber'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
 
         try {
-            $this->synchronizationService->synchronizeReceivers($subscriberGroups, 'subscriber');
             $this->synchronizationService->synchronizeReceivers($customerGroups, 'customer');
+            $this->synchronizationService->synchronizeReceivers($subscriberGroups, 'subscriber');
 
             return $response;
         } catch (SynchronizationException $e) {
