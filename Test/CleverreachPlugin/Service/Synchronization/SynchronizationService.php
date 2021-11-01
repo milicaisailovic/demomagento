@@ -56,7 +56,6 @@ class SynchronizationService
         $this->subscriberRepository = $subscriberRepository;
         $this->cleverReachRepository = $cleverReachRepository;
         $this->synchronizationProxy = $synchronizationProxy;
-        $this->groupId = json_decode($this->cleverReachRepository->get('groupInfo')->getValue(), true)['id'];
     }
 
     /**
@@ -82,13 +81,12 @@ class SynchronizationService
     }
 
     /**
-     * Get receiver group information.
-     *
-     * @return CleverReachInformation
+     * Get receiver group information from database.
      */
-    public function getGroupInfo(): CleverReachInformation
+    public function getGroupInfo(): void
     {
-        return $this->cleverReachRepository->get(CleverReachConfig::GROUP_INFO_NAME);
+        $groupInfo = $this->cleverReachRepository->get(CleverReachConfig::GROUP_INFO_NAME)->getValue();
+        $this->groupId = json_decode($groupInfo, true)['id'];
     }
 
     /**

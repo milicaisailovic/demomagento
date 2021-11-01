@@ -53,6 +53,10 @@ class Checklogin extends Action implements HttpGetActionInterface
     public function execute()
     {
         $token = $this->authorizationService->get();
-        echo $token !== null;
+        if($token === null){
+            echo 0;
+        } else {
+            echo json_encode([$this->getUrl('cleverreach/dashboard/index')]);
+        }
     }
 }

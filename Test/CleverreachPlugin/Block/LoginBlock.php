@@ -53,14 +53,4 @@ class LoginBlock extends Template
     {
         return $this->getUrl('cleverreach/login/checklogin');
     }
-
-    /**
-     * Get URL for dashboard.
-     *
-     * @return string
-     */
-    public function redirectToDashboard(): string
-    {
-        return $this->getUrl('cleverreach/dashboard/index');
-    }
 }

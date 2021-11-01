@@ -2,24 +2,22 @@ localStorage.removeItem('initialSyncDone');
 let checkLoginCall;
 let popupWindow;
 
-function openCleverReachPopUp(url, checkUrl, redirectUrl) {
+function openCleverReachPopUp(url, checkUrl) {
     popupWindow = window.open(url, '_blank', 'location=yes,height=570,width=900,scrollbars=yes,status=yes');
     checkLoginCall = setInterval(function () {
-        checkLogin(checkUrl, redirectUrl, checkLoginCall)
+        Demomagento.ajaxService.get(checkUrl, loginSuccess, loginError);
     }, 1000);
 }
 
-function checkLogin(checkUrl, redirectUrl) {
-    let xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function () {
-        console.log(this.responseText);
-        if (this.readyState === 4 && this.responseText === '1') {
-            clearInterval(checkLoginCall);
-            popupWindow.close();
-            window.location.replace(redirectUrl);
-        }
+function loginSuccess(response) {
+    if (response !== 0) {
+        clearInterval(checkLoginCall);
+        popupWindow.close();
+        window.location.replace(response[0]);
     }
+}
 
-    xhttp.open('GET', checkUrl);
-    xhttp.send();
+function loginError() {
+    clearInterval(checkLoginCall);
+    alert('Error logging in.');
 }

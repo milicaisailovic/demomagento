@@ -1,11 +1,16 @@
+<?php
+/**
+ * @var $block
+ */
+?>
 <div class="landingPage">
     <div class="cleverreachLogo">
-        <img src="<?= $this->getViewFileUrl('Test_CleverreachPlugin::images/cleverreach.png'); ?>" />
+        <img src="<?= $this->getViewFileUrl('Test_CleverreachPlugin::images/cleverreach.png'); ?>"/>
     </div>
     <div class="content">
         <div>
-            <img src="<?= $this->getViewFileUrl('Test_CleverreachPlugin::images/icon_quickstartmailing.svg');?>"
-                 class="iconStartMailing" />
+            <img src="<?= $this->getViewFileUrl('Test_CleverreachPlugin::images/icon_quickstartmailing.svg'); ?>"
+                 class="iconStartMailing"/>
         </div>
         <div class="title">
             Welcome to CleverReach
@@ -14,11 +19,11 @@
             Connect, sync customer data and create appealing emails to showcase your products to your customers.
         </div>
         <div class="buttonDiv">
-                <button class="connectButton"
-                        onclick="openCleverReachPopUp('<?= $block->escapeHtml($block->getLoginPageUrl()); ?>',
-                                '<?= $block->escapeHtml($block->checkLoginUrl()); ?>',
-                                '<?= $block->escapeHtml($block->redirectToDashboard()); ?>')"
-                > Connect </button>
+            <button class="connectButton"
+                    onclick="openCleverReachPopUp('<?= $block->escapeHtml($block->getLoginPageUrl()); ?>',
+                            '<?= $block->escapeHtml($block->checkLoginUrl()); ?>')"
+            > Connect
+            </button>
         </div>
     </div>
 </div>

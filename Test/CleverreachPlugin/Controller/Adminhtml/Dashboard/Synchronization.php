@@ -50,6 +50,7 @@ class Synchronization extends Action implements HttpGetActionInterface
     {
         $response = $this->resultJsonFactory->create();
         $this->synchronizationService->createGroup('demomagento2.3');
+        $this->synchronizationService->getGroupInfo();
         $numberOfReceivers = $this->synchronizationService->getNumberOfReceivers();
 
         $customerGroups = ceil($numberOfReceivers['customer'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);

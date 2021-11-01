@@ -44,7 +44,6 @@ class Index extends Action implements HttpGetActionInterface
     {
         $resultPage = $this->resultPageFactory->create();
         $resultPage->setActiveMenu(CleverReachConfig::MENU_ID);
-        $resultPage->getConfig()->getTitle()->prepend(__(''));
 
         return $resultPage;
     }
