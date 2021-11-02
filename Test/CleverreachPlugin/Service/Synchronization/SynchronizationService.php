@@ -5,12 +5,14 @@ namespace Test\CleverreachPlugin\Service\Synchronization;
 use Test\CleverreachPlugin\Repository\CleverReachRepository;
 use Test\CleverreachPlugin\Repository\CustomerRepository;
 use Test\CleverreachPlugin\Repository\SubscriberRepository;
+use Test\CleverreachPlugin\Service\Authorization\DTO\CleverReachInformation;
 use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
-use Test\CleverreachPlugin\Service\DataModel\CleverReachInformation;
-use Test\CleverreachPlugin\Service\DataModel\Receiver;
-use Test\CleverreachPlugin\Service\Exceptions\SynchronizationException;
+use Test\CleverreachPlugin\Service\Synchronization\Contracts\SynchronizationServiceInterface;
+use Test\CleverreachPlugin\Service\Synchronization\DTO\Receiver;
+use Test\CleverreachPlugin\Service\Synchronization\Exceptions\SynchronizationException;
+use Test\CleverreachPlugin\Service\Synchronization\Http\SynchronizationProxy;
 
-class SynchronizationService
+class SynchronizationService implements SynchronizationServiceInterface
 {
     /**
      * @var CustomerRepository
@@ -56,6 +58,7 @@ class SynchronizationService
         $this->subscriberRepository = $subscriberRepository;
         $this->cleverReachRepository = $cleverReachRepository;
         $this->synchronizationProxy = $synchronizationProxy;
+        $this->groupId = 0;
     }
 
     /**
@@ -75,18 +78,28 @@ class SynchronizationService
      */
     public function createGroup(string $groupName): void
     {
-        $groupInfoSerialized = $this->synchronizationProxy->createGroup($groupName);
-        $data = new CleverReachInformation(CleverReachConfig::GROUP_INFO_NAME, $groupInfoSerialized);
+        $response = $this->synchronizationProxy->createGroup($groupName);
+        if ($response->getStatus() !== 200) {
+            return;
+        }
+
+        $data = new CleverReachInformation(CleverReachConfig::GROUP_INFO_NAME, $response->getBody());
         $this->cleverReachRepository->set($data);
     }
 
     /**
      * Get receiver group information from database.
+     *
+     * @return int groupID
      */
-    public function getGroupInfo(): void
+    public function getGroupId(): int
     {
-        $groupInfo = $this->cleverReachRepository->get(CleverReachConfig::GROUP_INFO_NAME)->getValue();
-        $this->groupId = json_decode($groupInfo, true)['id'];
+        if ($this->groupId === 0) {
+            $groupInfo = $this->cleverReachRepository->get(CleverReachConfig::GROUP_INFO_NAME)->getValue();
+            $this->groupId = json_decode($groupInfo, true)['id'];
+        }
+
+        return $this->groupId;
     }
 
     /**
@@ -154,7 +167,7 @@ class SynchronizationService
      */
     public function sendReceivers(array $receivers): array
     {
-        return $this->synchronizationProxy->sendReceivers($receivers, $this->groupId);
+        return $this->synchronizationProxy->sendReceivers($receivers, $this->getGroupId())->decodeBodyToArray();
     }
 
     /**
@@ -164,7 +177,7 @@ class SynchronizationService
      */
     public function deleteReceiver(string $email): void
     {
-        $this->synchronizationProxy->deleteReceiver($this->groupId, $email);
+        $this->synchronizationProxy->deleteReceiver($this->getGroupId(), $email);
     }
 
     /**
@@ -190,9 +203,9 @@ class SynchronizationService
     /**
      * Delete all emails in API group.
      */
-    public function truncateGroup()
+    public function truncateGroup(): void
     {
-        $this->synchronizationProxy->truncateGroup($this->groupId);
+        $this->synchronizationProxy->truncateGroup($this->getGroupId());
     }
 
     /**

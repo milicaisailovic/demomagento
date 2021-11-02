@@ -4,22 +4,22 @@ namespace Test\CleverreachPlugin\Observer;
 
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use Test\CleverreachPlugin\Service\DataModel\Receiver;
-use Test\CleverreachPlugin\Service\Synchronization\SynchronizationService;
+use Test\CleverreachPlugin\Service\Synchronization\Contracts\SynchronizationServiceInterface;
+use Test\CleverreachPlugin\Service\Synchronization\DTO\Receiver;
 
 abstract class SaveDataObserver implements ObserverInterface
 {
     /**
-     * @var SynchronizationService
+     * @var SynchronizationServiceInterface
      */
     private $synchronizationService;
 
     /**
      * SaveDataObserver constructor.
      *
-     * @param SynchronizationService $synchronizationService
+     * @param SynchronizationServiceInterface $synchronizationService
      */
-    public function __construct(SynchronizationService $synchronizationService)
+    public function __construct(SynchronizationServiceInterface $synchronizationService)
     {
         $this->synchronizationService = $synchronizationService;
     }

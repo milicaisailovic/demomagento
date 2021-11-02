@@ -2,13 +2,14 @@
 
 namespace Test\CleverreachPlugin\Service\Authorization;
 
-use Magento\Framework\App\ObjectManager;
 use Test\CleverreachPlugin\Repository\CleverReachRepository;
+use Test\CleverreachPlugin\Service\Authorization\Contracts\AuthorizationServiceInterface;
+use Test\CleverreachPlugin\Service\Authorization\DTO\CleverReachInformation;
+use Test\CleverreachPlugin\Service\Authorization\Exceptions\AuthorizationException;
+use Test\CleverreachPlugin\Service\Authorization\Http\AuthorizationProxy;
 use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
-use Test\CleverreachPlugin\Service\DataModel\CleverReachInformation;
-use Test\CleverreachPlugin\Service\Exceptions\AuthorizationException;
 
-class AuthorizationService
+class AuthorizationService implements AuthorizationServiceInterface
 {
     /**
      * @var CleverReachRepository
@@ -67,10 +68,7 @@ class AuthorizationService
      */
     public function getRedirectUri(): string
     {
-        $objectManager = ObjectManager::getInstance();
-        $storeManager = $objectManager->get('\Magento\Store\Model\StoreManagerInterface');
-
-        return $storeManager->getStore()->getBaseUrl() . 'front/callback/index';
+        return $this->proxy->getRedirectUri();
     }
 
     /**
@@ -84,15 +82,16 @@ class AuthorizationService
      */
     public function verify(string $code): void
     {
-        $response = $this->proxy->verify($code);
-        $responseDecoded = json_decode($response, true);
+        $response = $this->proxy->authorize($code);
 
-        if (array_key_exists('error', $responseDecoded)) {
-            throw new AuthorizationException('cUrl error: ' . $responseDecoded['error'], 401);
+        if ($response->getStatus() < 200 || $response->getStatus() >= 300) {
+            throw new AuthorizationException('cUrl error: ' . $response->decodeBodyToArray()['error'],
+                $response->getStatus());
         }
 
-        $this->set($responseDecoded['access_token']);
-        $clientInfo = $this->proxy->getClientAccountInformation($responseDecoded['access_token']);
+        $accessToken = $response->decodeBodyToArray()['access_token'];
+        $this->set($accessToken);
+        $clientInfo = $this->proxy->getClientAccountInformation($accessToken)->getBody();
         $this->repository->set(new CleverReachInformation('clientInfo', $clientInfo));
     }
 }

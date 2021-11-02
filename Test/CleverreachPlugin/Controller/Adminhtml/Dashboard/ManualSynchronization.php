@@ -8,8 +8,8 @@ use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
-use Test\CleverreachPlugin\Service\Exceptions\SynchronizationException;
-use Test\CleverreachPlugin\Service\Synchronization\SynchronizationService;
+use Test\CleverreachPlugin\Service\Synchronization\Contracts\SynchronizationServiceInterface;
+use Test\CleverreachPlugin\Service\Synchronization\Exceptions\SynchronizationException;
 
 class ManualSynchronization extends Action implements HttpGetActionInterface
 {
@@ -19,7 +19,7 @@ class ManualSynchronization extends Action implements HttpGetActionInterface
     protected $resultJsonFactory;
 
     /**
-     * @var SynchronizationService
+     * @var SynchronizationServiceInterface
      */
     private $synchronizationService;
 
@@ -28,12 +28,12 @@ class ManualSynchronization extends Action implements HttpGetActionInterface
      *
      * @param Context $context
      * @param JsonFactory $resultJsonFactory
-     * @param SynchronizationService $synchronizationService
+     * @param SynchronizationServiceInterface $synchronizationService
      */
     public function __construct(
-        Context                $context,
-        JsonFactory            $resultJsonFactory,
-        SynchronizationService $synchronizationService
+        Context                         $context,
+        JsonFactory                     $resultJsonFactory,
+        SynchronizationServiceInterface $synchronizationService
     )
     {
         parent::__construct($context);

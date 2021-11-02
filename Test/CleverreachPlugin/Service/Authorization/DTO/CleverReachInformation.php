@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\CleverreachPlugin\Service\DataModel;
+namespace Test\CleverreachPlugin\Service\Authorization\DTO;
 
 class CleverReachInformation
 {

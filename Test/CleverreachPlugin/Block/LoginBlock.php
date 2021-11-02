@@ -4,13 +4,13 @@ namespace Test\CleverreachPlugin\Block;
 
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\View\Element\Template;
-use Test\CleverreachPlugin\Service\Authorization\AuthorizationService;
+use Test\CleverreachPlugin\Service\Authorization\Contracts\AuthorizationServiceInterface;
 use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 
 class LoginBlock extends Template
 {
     /**
-     * @var AuthorizationService
+     * @var AuthorizationServiceInterface
      */
     private $authorizationService;
 
@@ -18,13 +18,13 @@ class LoginBlock extends Template
      * LoginBlock constructor.
      *
      * @param Context $context
-     * @param AuthorizationService $authorizationService
+     * @param AuthorizationServiceInterface $authorizationService
      * @param array $data
      */
     public function __construct(
-        Context              $context,
-        AuthorizationService $authorizationService,
-        array                $data = []
+        Context                       $context,
+        AuthorizationServiceInterface $authorizationService,
+        array                         $data = []
     )
     {
         parent::__construct($context, $data);

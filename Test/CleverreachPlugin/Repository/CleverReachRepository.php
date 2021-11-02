@@ -4,7 +4,7 @@ namespace Test\CleverreachPlugin\Repository;
 
 use Magento\Framework\App\ObjectManager;
 use Test\CleverreachPlugin\ResourceModel\CleverReachEntity;
-use Test\CleverreachPlugin\Service\DataModel\CleverReachInformation;
+use Test\CleverreachPlugin\Service\Authorization\DTO\CleverReachInformation;
 
 class CleverReachRepository
 {

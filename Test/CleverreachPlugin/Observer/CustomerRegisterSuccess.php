@@ -2,17 +2,17 @@
 
 namespace Test\CleverreachPlugin\Observer;
 
-use Test\CleverreachPlugin\Service\Synchronization\SynchronizationService;
+use Test\CleverreachPlugin\Service\Synchronization\Contracts\SynchronizationServiceInterface;
 
 class CustomerRegisterSuccess extends SaveDataObserver
 {
     /**
      * CustomerRegisterSuccess constructor.
      *
-     * @param SynchronizationService $synchronizationService
+     * @param SynchronizationServiceInterface $synchronizationService
      */
     public function __construct(
-        SynchronizationService $synchronizationService
+        SynchronizationServiceInterface $synchronizationService
     )
     {
         parent::__construct($synchronizationService);

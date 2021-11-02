@@ -4,7 +4,7 @@ namespace Test\CleverreachPlugin\ResourceModel;
 
 use Magento\Framework\DB\Adapter\AdapterInterface;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Test\CleverreachPlugin\Service\DataModel\CleverReachInformation;
+use Test\CleverreachPlugin\Service\Authorization\DTO\CleverReachInformation;
 
 class CleverReachEntity extends AbstractDb
 {

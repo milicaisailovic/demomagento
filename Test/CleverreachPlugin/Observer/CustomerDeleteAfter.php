@@ -4,12 +4,12 @@ namespace Test\CleverreachPlugin\Observer;
 
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
-use Test\CleverreachPlugin\Service\Synchronization\SynchronizationService;
+use Test\CleverreachPlugin\Service\Synchronization\Contracts\SynchronizationServiceInterface;
 
 class CustomerDeleteAfter implements ObserverInterface
 {
     /**
-     * @var SynchronizationService
+     * @var SynchronizationServiceInterface
      */
     private $synchronizationService;
 
@@ -17,7 +17,7 @@ class CustomerDeleteAfter implements ObserverInterface
      * CustomerDeleteAfter constructor.
      */
     public function __construct(
-        SynchronizationService $synchronizationService
+        SynchronizationServiceInterface $synchronizationService
     )
     {
         $this->synchronizationService = $synchronizationService;

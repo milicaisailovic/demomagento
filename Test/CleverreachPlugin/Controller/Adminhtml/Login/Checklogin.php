@@ -5,10 +5,8 @@ namespace Test\CleverreachPlugin\Controller\Adminhtml\Login;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
-use Magento\Framework\App\ResponseInterface;
-use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\Result\PageFactory;
-use Test\CleverreachPlugin\Service\Authorization\AuthorizationService;
+use Test\CleverreachPlugin\Service\Authorization\Contracts\AuthorizationServiceInterface;
 
 /**
  * Class Index
@@ -22,7 +20,7 @@ class Checklogin extends Action implements HttpGetActionInterface
     protected $resultPageFactory;
 
     /**
-     * @var AuthorizationService
+     * @var AuthorizationServiceInterface
      */
     private $authorizationService;
 
@@ -31,12 +29,12 @@ class Checklogin extends Action implements HttpGetActionInterface
      *
      * @param Context $context
      * @param PageFactory $resultPageFactory
-     * @param AuthorizationService $authorizationService
+     * @param AuthorizationServiceInterface $authorizationService
      */
     public function __construct(
         Context              $context,
         PageFactory          $resultPageFactory,
-        AuthorizationService $authorizationService
+        AuthorizationServiceInterface $authorizationService
     )
     {
         parent::__construct($context);
@@ -48,7 +46,7 @@ class Checklogin extends Action implements HttpGetActionInterface
     /**
      * Check if token exists in database.
      *
-     * @return ResponseInterface|ResultInterface|void
+     * @return void
      */
     public function execute()
     {

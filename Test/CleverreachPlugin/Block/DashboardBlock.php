@@ -4,12 +4,12 @@ namespace Test\CleverreachPlugin\Block;
 
 use Magento\Backend\Block\Template\Context;
 use Magento\Framework\View\Element\Template;
-use Test\CleverreachPlugin\Service\Synchronization\SynchronizationService;
+use Test\CleverreachPlugin\Service\Synchronization\Contracts\SynchronizationServiceInterface;
 
 class DashboardBlock extends Template
 {
     /**
-     * @var SynchronizationService
+     * @var SynchronizationServiceInterface
      */
     private $synchronizationService;
 
@@ -17,13 +17,13 @@ class DashboardBlock extends Template
      * DashboardBlock constructor.
      *
      * @param Context $context
-     * @param SynchronizationService $synchronizationService
+     * @param SynchronizationServiceInterface $synchronizationService
      * @param array $data
      */
     public function __construct(
-        Context                $context,
-        SynchronizationService $synchronizationService,
-        array                  $data = []
+        Context                         $context,
+        SynchronizationServiceInterface $synchronizationService,
+        array                           $data = []
     )
     {
         parent::__construct($context, $data);

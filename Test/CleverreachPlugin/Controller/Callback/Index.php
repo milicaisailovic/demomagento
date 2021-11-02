@@ -7,8 +7,8 @@ use Magento\Framework\App\Action\Context;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
-use Test\CleverreachPlugin\Service\Authorization\AuthorizationService;
-use Test\CleverreachPlugin\Service\Exceptions\AuthorizationException;
+use Test\CleverreachPlugin\Service\Authorization\Contracts\AuthorizationServiceInterface;
+use Test\CleverreachPlugin\Service\Authorization\Exceptions\AuthorizationException;
 
 /**
  * Class Index
@@ -21,7 +21,7 @@ class Index extends Action
     protected $_pageFactory;
 
     /**
-     * @var AuthorizationService
+     * @var AuthorizationServiceInterface
      */
     private $authorizationService;
 
@@ -30,12 +30,12 @@ class Index extends Action
      *
      * @param Context $context
      * @param PageFactory $pageFactory
-     * @param AuthorizationService $authorizationService
+     * @param AuthorizationServiceInterface $authorizationService
      */
     public function __construct(
-        Context              $context,
-        PageFactory          $pageFactory,
-        AuthorizationService $authorizationService
+        Context                       $context,
+        PageFactory                   $pageFactory,
+        AuthorizationServiceInterface $authorizationService
     )
     {
         parent::__construct($context);

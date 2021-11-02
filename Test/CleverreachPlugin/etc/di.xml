@@ -1,51 +1,39 @@
-<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <preference for="Test\CleverreachPlugin\Service\Authorization\Contracts\AuthorizationServiceInterface"
+                type="Test\CleverreachPlugin\Service\Authorization\AuthorizationService"/>
+    <preference for="Test\CleverreachPlugin\Service\Synchronization\Contracts\SynchronizationServiceInterface"
+                type="Test\CleverreachPlugin\Service\Synchronization\SynchronizationService"/>
     <type name="Test\CleverreachPlugin\Service\Authorization\AuthorizationService">
         <arguments>
-            <argument name="authorizationProxy" xsi:type="object">Test\CleverreachPlugin\Service\Authorization\AuthorizationProxy</argument>
-            <argument name="cleverreachRepository" xsi:type="object">Test\CleverreachPlugin\Repository\CleverReachRepository</argument>
+            <argument name="authorizationProxy" xsi:type="object">
+                Test\CleverreachPlugin\Service\Authorization\Http\AuthorizationProxy
+            </argument>
+            <argument name="cleverReachRepository" xsi:type="object">
+                Test\CleverreachPlugin\Repository\CleverReachRepository
+            </argument>
         </arguments>
     </type>
-    <type name="Test\CleverreachPlugin\Block\LoginBlock">
+    <type name="Test\CleverreachPlugin\Service\Synchronization\Http\SynchronizationProxy">
         <arguments>
-            <argument name="authorizationService" xsi:type="object">Test\CleverreachPlugin\Service\Authorization\AuthorizationService</argument>
-        </arguments>
-    </type>
-    <type name="Test\CleverreachPlugin\Controller\Adminhtml\Login\Checklogin">
-        <arguments>
-            <argument name="authorizationService" xsi:type="object">Test\CleverreachPlugin\Service\Authorization\AuthorizationService</argument>
-        </arguments>
-    </type>
-    <type name="Test\CleverreachPlugin\Controller\Adminhtml\Login\Index">
-        <arguments>
-            <argument name="authorizationService" xsi:type="object">Test\CleverreachPlugin\Service\Authorization\AuthorizationService</argument>
-        </arguments>
-    </type>
-    <type name="Test\CleverreachPlugin\Controller\Callback\Index">
-        <arguments>
-            <argument name="authorizationService" xsi:type="object">Test\CleverreachPlugin\Service\Authorization\AuthorizationService</argument>
-        </arguments>
-    </type>
-    <type name="Test\CleverreachPlugin\Service\Synchronization\SynchronizationProxy">
-        <arguments>
-            <argument name="cleverreachRepository" xsi:type="object">Test\CleverreachPlugin\Repository\CleverReachRepository</argument>
+            <argument name="cleverReachRepository" xsi:type="object">
+                Test\CleverreachPlugin\Repository\CleverReachRepository
+            </argument>
         </arguments>
     </type>
     <type name="Test\CleverreachPlugin\Service\Synchronization\SynchronizationService">
         <arguments>
-            <argument name="cleverreachRepository" xsi:type="object">Test\CleverreachPlugin\Repository\CleverReachRepository</argument>
-            <argument name="subscriberRepository" xsi:type="object">Test\CleverreachPlugin\Repository\SubscriberRepository</argument>
-            <argument name="customerRepository" xsi:type="object">Test\CleverreachPlugin\Repository\CustomerRepository</argument>
-            <argument name="synchronizationProxy" xsi:type="object">Test\CleverreachPlugin\Service\Synchronization\SynchronizationProxy</argument>
-        </arguments>
-    </type>
-    <type name="Test\CleverreachPlugin\Controller\Adminhtml\Dashboard\Synchronization">
-        <arguments>
-            <argument name="synchronizationService" xsi:type="object">Test\CleverreachPlugin\Service\Synchronization\SynchronizationService</argument>
-        </arguments>
-    </type>
-    <type name="Test\CleverreachPlugin\Block\DashboardBlock">
-        <arguments>
-            <argument name="synchronizationService" xsi:type="object">Test\CleverreachPlugin\Service\Synchronization\SynchronizationService</argument>
+            <argument name="cleverReachRepository" xsi:type="object">
+                Test\CleverreachPlugin\Repository\CleverReachRepository
+            </argument>
+            <argument name="subscriberRepository" xsi:type="object">
+                Test\CleverreachPlugin\Repository\SubscriberRepository
+            </argument>
+            <argument name="customerRepository" xsi:type="object">Test\CleverreachPlugin\Repository\CustomerRepository
+            </argument>
+            <argument name="synchronizationProxy" xsi:type="object">
+                Test\CleverreachPlugin\Service\Synchronization\Http\SynchronizationProxy
+            </argument>
         </arguments>
     </type>
 </config>

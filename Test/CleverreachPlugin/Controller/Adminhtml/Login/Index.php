@@ -7,7 +7,7 @@ use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\View\Result\Page;
 use Magento\Framework\View\Result\PageFactory;
-use Test\CleverreachPlugin\Service\Authorization\AuthorizationService;
+use Test\CleverreachPlugin\Service\Authorization\Contracts\AuthorizationServiceInterface;
 use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 
 /**
@@ -21,7 +21,7 @@ class Index extends Action implements HttpGetActionInterface
     protected $resultPageFactory;
 
     /**
-     * @var AuthorizationService
+     * @var AuthorizationServiceInterface
      */
     private $authorizationService;
 
@@ -30,12 +30,12 @@ class Index extends Action implements HttpGetActionInterface
      *
      * @param Context $context
      * @param PageFactory $resultPageFactory
-     * @param AuthorizationService $authorizationService
+     * @param AuthorizationServiceInterface $authorizationService
      */
     public function __construct(
-        Context              $context,
-        PageFactory          $resultPageFactory,
-        AuthorizationService $authorizationService
+        Context                       $context,
+        PageFactory                   $resultPageFactory,
+        AuthorizationServiceInterface $authorizationService
     )
     {
         parent::__construct($context);
@@ -58,7 +58,6 @@ class Index extends Action implements HttpGetActionInterface
             $this->_redirect('cleverreach/dashboard/index');
         }
 
-        $resultPage->getConfig()->getTitle()->prepend(__(''));
         $resultPage->setActiveMenu(CleverReachConfig::MENU_ID);
 
         return $resultPage;

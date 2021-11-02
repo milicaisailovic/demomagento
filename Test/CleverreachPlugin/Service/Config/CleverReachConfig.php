@@ -2,6 +2,8 @@
 
 namespace Test\CleverreachPlugin\Service\Config;
 
+use Magento\Framework\App\ObjectManager;
+
 class CleverReachConfig
 {
     const MENU_ID = 'Test_CleverreachPlugin::cleverreach_landingpage';
