@@ -231,6 +231,22 @@ class SynchronizationService implements SynchronizationServiceInterface
     }
 
     /**
+     * Synchronize receivers.
+     *
+     * @throws SynchronizationException
+     */
+    private function synchronize()
+    {
+        $numberOfReceivers = $this->getNumberOfReceivers();
+
+        $customerGroups = ceil($numberOfReceivers['customer'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
+        $subscriberGroups = ceil($numberOfReceivers['subscriber'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
+
+        $this->synchronizeReceivers($customerGroups, 'customer');
+        $this->synchronizeReceivers($subscriberGroups, 'subscriber');
+    }
+
+    /**
      * Map customers from database to Receiver data model.
      *
      * @param array $customers
@@ -266,19 +282,5 @@ class SynchronizationService implements SynchronizationServiceInterface
         }
 
         return $receivers;
-    }
-
-    /**
-     * @throws SynchronizationException
-     */
-    private function synchronize()
-    {
-        $numberOfReceivers = $this->getNumberOfReceivers();
-
-        $customerGroups = ceil($numberOfReceivers['customer'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
-        $subscriberGroups = ceil($numberOfReceivers['subscriber'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
-
-        $this->synchronizeReceivers($customerGroups, 'customer');
-        $this->synchronizeReceivers($subscriberGroups, 'subscriber');
     }
 }

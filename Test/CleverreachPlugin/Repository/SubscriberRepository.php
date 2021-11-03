@@ -2,22 +2,24 @@
 
 namespace Test\CleverreachPlugin\Repository;
 
-use Magento\Framework\App\ObjectManager;
-use Test\CleverreachPlugin\ResourceModel\SubscriberEntity;
+use Magento\Newsletter\Model\ResourceModel\Subscriber\CollectionFactory;
+use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 
 class SubscriberRepository
 {
     /**
-     * @var SubscriberEntity
+     * @var CollectionFactory
      */
-    private $resourceEntity;
+    private $subscriberFactory;
 
     /**
      * SubscriberRepository constructor.
      */
-    public function __construct()
+    public function __construct(
+        CollectionFactory $subscriberFactory
+    )
     {
-        $this->resourceEntity = ObjectManager::getInstance()->create(SubscriberEntity::class);
+        $this->subscriberFactory = $subscriberFactory;
     }
 
     /**
@@ -29,7 +31,11 @@ class SubscriberRepository
      */
     public function getSubscribers(int $groupNumber): array
     {
-        return $this->resourceEntity->select($groupNumber);
+        $customerCollection = $this->subscriberFactory->create();
+        $customerCollection->setPageSize(CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
+        $customerCollection->setCurPage($groupNumber);
+
+        return $customerCollection->getData();
     }
 
     /**
@@ -39,6 +45,6 @@ class SubscriberRepository
      */
     public function numberOfSubscribers(): int
     {
-        return $this->resourceEntity->count();
+        return $this->subscriberFactory->create()->count();
     }
 }

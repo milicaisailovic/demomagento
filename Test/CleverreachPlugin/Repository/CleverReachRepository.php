@@ -3,11 +3,13 @@
 namespace Test\CleverreachPlugin\Repository;
 
 use Magento\Framework\App\ObjectManager;
+use Magento\Framework\Exception\LocalizedException;
 use Test\CleverreachPlugin\ResourceModel\CleverReachEntity;
 use Test\CleverreachPlugin\Service\Authorization\DTO\CleverReachInformation;
 
 class CleverReachRepository
 {
+    const TABLE_NAME = 'cleverreach_entity';
     /**
      * @var CleverReachEntity
      */
@@ -19,6 +21,7 @@ class CleverReachRepository
     public function __construct()
     {
         $this->resourceEntity = ObjectManager::getInstance()->create(CleverReachEntity::class);
+        $this->resourceEntity->setTableName(self::TABLE_NAME);
     }
 
     /**
@@ -28,7 +31,11 @@ class CleverReachRepository
      */
     public function set(CleverReachInformation $information): void
     {
-        $this->resourceEntity->upsert($information);
+        try {
+            $this->resourceEntity->upsert($information);
+        } catch (LocalizedException $exception) {
+            return;
+        }
     }
 
     /**
@@ -40,11 +47,14 @@ class CleverReachRepository
      */
     public function get(string $name): ?CleverReachInformation
     {
-        $resource = $this->resourceEntity->select($name);
-        if ($resource === null) {
+        try {
+            $resource = $this->resourceEntity->select($name);
+            if ($resource === null) {
+                return null;
+            }
+            return new CleverReachInformation($resource['name'], $resource['value']);
+        } catch (LocalizedException $exception) {
             return null;
         }
-
-        return new CleverReachInformation($resource['name'], $resource['value']);
     }
 }

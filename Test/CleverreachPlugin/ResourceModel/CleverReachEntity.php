@@ -2,32 +2,27 @@
 
 namespace Test\CleverreachPlugin\ResourceModel;
 
-use Magento\Framework\DB\Adapter\AdapterInterface;
+use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
 use Test\CleverreachPlugin\Service\Authorization\DTO\CleverReachInformation;
 
 class CleverReachEntity extends AbstractDb
 {
-    const TABLE_NAME = 'cleverreach_entity';
-
-    /**
-     * @var AdapterInterface
-     */
-    private $connection;
-
-    /**
-     * @var string
-     */
-    private $tableName;
-
     /**
      * CleverReachEntity constructor.
      */
     protected function _construct()
     {
-        $this->_init(self::TABLE_NAME, 'id');
-        $this->connection = $this->getConnection();
-        $this->tableName = $this->connection->getTableName(self::TABLE_NAME);
+    }
+
+    /**
+     * Set resource model table name.
+     *
+     * @param string $tableName Name of the database table.
+     */
+    public function setTableName(string $tableName)
+    {
+        $this->_init($tableName, 'id');
     }
 
     /**
@@ -36,12 +31,13 @@ class CleverReachEntity extends AbstractDb
      * @param string $name
      *
      * @return array|null
+     * @throws LocalizedException
      */
     public function select(string $name): ?array
     {
-        $select = $this->connection->select()->from($this->tableName)
-            ->where(self::TABLE_NAME . '.name = ?', $name);
-        $result = $this->connection->fetchRow($select);
+        $select = $this->getConnection()->select()->from($this->getMainTable())
+            ->where($this->getMainTable() . '.name = ?', $name);
+        $result = $this->getConnection()->fetchRow($select);
 
         return !empty($result) ? $result : null;
     }
@@ -50,21 +46,25 @@ class CleverReachEntity extends AbstractDb
      * Insert value for forwarded name.
      *
      * @param CleverReachInformation $information
+     *
+     * @throws LocalizedException
      */
     public function upsert(CleverReachInformation $information): void
     {
         $data = ['name' => $information->getName(), 'value' => $information->getValue()];
-        $this->connection->insertOnDuplicate($this->tableName, $data);
+        $this->getConnection()->insertOnDuplicate($this->getMainTable(), $data);
     }
 
     /**
      * Update value for forwarded name.
      *
      * @param CleverReachInformation $information
+     *
+     * @throws LocalizedException
      */
     public function update(CleverReachInformation $information): void
     {
         $data = ['value' => $information->getValue()];
-        $this->connection->update($this->tableName, $data, ['name = ?' => $information->getName()]);
+        $this->getConnection()->update($this->getMainTable(), $data, ['name = ?' => $information->getName()]);
     }
 }

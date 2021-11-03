@@ -2,22 +2,24 @@
 
 namespace Test\CleverreachPlugin\Repository;
 
-use Magento\Framework\App\ObjectManager;
-use Test\CleverreachPlugin\ResourceModel\CustomerEntity;
+use Magento\Customer\Model\ResourceModel\Customer\CollectionFactory;
+use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 
 class CustomerRepository
 {
     /**
-     * @var CustomerEntity
+     * @var CollectionFactory
      */
-    private $resourceEntity;
+    private $customerFactory;
 
     /**
      * CustomerRepository constructor.
      */
-    public function __construct()
+    public function __construct(
+        CollectionFactory $customerFactory
+    )
     {
-        $this->resourceEntity = ObjectManager::getInstance()->create(CustomerEntity::class);
+        $this->customerFactory = $customerFactory;
     }
 
     /**
@@ -29,7 +31,11 @@ class CustomerRepository
      */
     public function getCustomers(int $groupNumber): array
     {
-        return $this->resourceEntity->select($groupNumber);
+        $customerCollection = $this->customerFactory->create();
+        $customerCollection->setPageSize(CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
+        $customerCollection->setCurPage($groupNumber);
+
+        return $customerCollection->getData();
     }
 
     /**
@@ -39,7 +45,7 @@ class CustomerRepository
      */
     public function numberOfCustomers(): int
     {
-        return $this->resourceEntity->count();
+        return $this->customerFactory->create()->count();
     }
 
     /**
@@ -51,6 +57,9 @@ class CustomerRepository
      */
     public function getCustomerByEmail(string $email): array
     {
-        return $this->resourceEntity->selectByEmail($email);
+        $customerCollection = $this->customerFactory->create();
+        $customerCollection->addFieldToFilter('email', ['eq' => $email]);
+
+        return $customerCollection->getData();
     }
 }
