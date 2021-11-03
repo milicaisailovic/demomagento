@@ -7,7 +7,6 @@ use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
-use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 use Test\CleverreachPlugin\Service\Synchronization\Contracts\SynchronizationServiceInterface;
 use Test\CleverreachPlugin\Service\Synchronization\Exceptions\SynchronizationException;
 
@@ -49,15 +48,8 @@ class ManualSynchronization extends Action implements HttpGetActionInterface
     public function execute(): Json
     {
         $response = $this->resultJsonFactory->create();
-        $this->synchronizationService->truncateGroup();
-        $numberOfReceivers = $this->synchronizationService->getNumberOfReceivers();
-
-        $customerGroups = ceil($numberOfReceivers['customer'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
-        $subscriberGroups = ceil($numberOfReceivers['subscriber'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
-
         try {
-            $this->synchronizationService->synchronizeReceivers($customerGroups, 'customer');
-            $this->synchronizationService->synchronizeReceivers($subscriberGroups, 'subscriber');
+            $this->synchronizationService->manualSynchronization();
 
             return $response;
         } catch (SynchronizationException $e) {

@@ -62,6 +62,28 @@ class SynchronizationService implements SynchronizationServiceInterface
     }
 
     /**
+     * Performs initial synchronization after login on CleverReach API.
+     *
+     * @throws SynchronizationException
+     */
+    public function initialSynchronization(): void
+    {
+        $this->createGroup('demomagento2.3');
+        $this->synchronize();
+    }
+
+    /**
+     * Performs manual synchronization.
+     *
+     * @throws SynchronizationException
+     */
+    public function manualSynchronization(): void
+    {
+        $this->truncateGroup();
+        $this->synchronize();
+    }
+
+    /**
      * Get client account ID from database.
      *
      * @return int
@@ -244,5 +266,19 @@ class SynchronizationService implements SynchronizationServiceInterface
         }
 
         return $receivers;
+    }
+
+    /**
+     * @throws SynchronizationException
+     */
+    private function synchronize()
+    {
+        $numberOfReceivers = $this->getNumberOfReceivers();
+
+        $customerGroups = ceil($numberOfReceivers['customer'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
+        $subscriberGroups = ceil($numberOfReceivers['subscriber'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
+
+        $this->synchronizeReceivers($customerGroups, 'customer');
+        $this->synchronizeReceivers($subscriberGroups, 'subscriber');
     }
 }

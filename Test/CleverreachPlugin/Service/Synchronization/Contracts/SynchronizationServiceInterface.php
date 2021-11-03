@@ -5,6 +5,16 @@ namespace Test\CleverreachPlugin\Service\Synchronization\Contracts;
 interface SynchronizationServiceInterface
 {
     /**
+     * Performs initial synchronization after login on CleverReach API.
+     */
+    public function initialSynchronization(): void;
+
+    /**
+     * Performs manual synchronization.
+     */
+    public function manualSynchronization(): void;
+
+    /**
      * Get client account ID from database.
      *
      * @return int
