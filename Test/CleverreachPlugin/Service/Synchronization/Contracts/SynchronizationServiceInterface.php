@@ -2,6 +2,9 @@
 
 namespace Test\CleverreachPlugin\Service\Synchronization\Contracts;
 
+use Test\CleverreachPlugin\Service\Authorization\DTO\ClientInfo;
+use Test\CleverreachPlugin\Service\Synchronization\DTO\GroupInfo;
+
 interface SynchronizationServiceInterface
 {
     /**
@@ -19,7 +22,7 @@ interface SynchronizationServiceInterface
      *
      * @return int
      */
-    public function getClientId(): int;
+    public function getClientInfo(): ClientInfo;
 
     /**
      * Send request to API for creating new group and set receiver group information in database.
@@ -31,7 +34,7 @@ interface SynchronizationServiceInterface
     /**
      * Get receiver group information from database.
      */
-    public function getGroupId(): int;
+    public function getGroupInfo(): GroupInfo;
 
     /**
      * Get edited customer from database and send it to API.

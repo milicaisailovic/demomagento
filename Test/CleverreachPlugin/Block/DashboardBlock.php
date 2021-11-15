@@ -33,11 +33,11 @@ class DashboardBlock extends Template
     /**
      * Return client ID.
      *
-     * @return string
+     * @return int
      */
-    public function getClientId(): string
+    public function getClientId(): int
     {
-        return $this->synchronizationService->getClientId();
+        return $this->synchronizationService->getClientInfo()->getId();
     }
 
     /**

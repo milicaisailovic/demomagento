@@ -2,14 +2,16 @@
 
 namespace Test\CleverreachPlugin\Service\Authorization\Contracts;
 
+use Test\CleverreachPlugin\Service\Authorization\DTO\AccessToken;
+
 interface AuthorizationServiceInterface
 {
     /**
      * Get token from repository, or null if token doesn't exist.
      *
-     * @return string|null
+     * @return AccessToken|null
      */
-    public function get(): ?string;
+    public function get(): ?AccessToken;
 
 
     /**

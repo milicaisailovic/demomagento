@@ -5,7 +5,8 @@ namespace Test\CleverreachPlugin\Controller\Adminhtml\Login;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\App\Action\HttpGetActionInterface;
-use Magento\Framework\View\Result\PageFactory;
+use Magento\Framework\Controller\Result\Json;
+use Magento\Framework\Controller\Result\JsonFactory;
 use Test\CleverreachPlugin\Service\Authorization\Contracts\AuthorizationServiceInterface;
 
 /**
@@ -15,9 +16,9 @@ class Checklogin extends Action implements HttpGetActionInterface
 {
 
     /**
-     * @var PageFactory
+     * @var JsonFactory
      */
-    protected $resultPageFactory;
+    protected $jsonResponseFactory;
 
     /**
      * @var AuthorizationServiceInterface
@@ -28,33 +29,34 @@ class Checklogin extends Action implements HttpGetActionInterface
      * Index constructor.
      *
      * @param Context $context
-     * @param PageFactory $resultPageFactory
+     * @param JsonFactory $jsonFactory
      * @param AuthorizationServiceInterface $authorizationService
      */
     public function __construct(
-        Context              $context,
-        PageFactory          $resultPageFactory,
+        Context                       $context,
+        JsonFactory                   $jsonFactory,
         AuthorizationServiceInterface $authorizationService
     )
     {
         parent::__construct($context);
 
-        $this->resultPageFactory = $resultPageFactory;
+        $this->jsonResponseFactory = $jsonFactory;
         $this->authorizationService = $authorizationService;
     }
 
     /**
      * Check if token exists in database.
      *
-     * @return void
+     * @return Json
      */
-    public function execute()
+    public function execute(): Json
     {
+        $response = $this->jsonResponseFactory->create();
         $token = $this->authorizationService->get();
-        if($token === null){
-            echo 0;
-        } else {
-            echo json_encode([$this->getUrl('cleverreach/dashboard/index')]);
+        if ($token === null) {
+            return $response->setData([]);
         }
+
+        return $response->setData([$this->getUrl('cleverreach/dashboard/index')]);
     }
 }

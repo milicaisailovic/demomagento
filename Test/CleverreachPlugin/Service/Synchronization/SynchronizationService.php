@@ -5,9 +5,10 @@ namespace Test\CleverreachPlugin\Service\Synchronization;
 use Test\CleverreachPlugin\Repository\CleverReachRepository;
 use Test\CleverreachPlugin\Repository\CustomerRepository;
 use Test\CleverreachPlugin\Repository\SubscriberRepository;
-use Test\CleverreachPlugin\Service\Authorization\DTO\CleverReachInformation;
+use Test\CleverreachPlugin\Service\Authorization\DTO\ClientInfo;
 use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 use Test\CleverreachPlugin\Service\Synchronization\Contracts\SynchronizationServiceInterface;
+use Test\CleverreachPlugin\Service\Synchronization\DTO\GroupInfo;
 use Test\CleverreachPlugin\Service\Synchronization\DTO\Receiver;
 use Test\CleverreachPlugin\Service\Synchronization\Exceptions\SynchronizationException;
 use Test\CleverreachPlugin\Service\Synchronization\Http\SynchronizationProxy;
@@ -35,9 +36,9 @@ class SynchronizationService implements SynchronizationServiceInterface
     private $synchronizationProxy;
 
     /**
-     * @var int
+     * @var GroupInfo
      */
-    private $groupId;
+    private $groupInfo;
 
     /**
      * SynchronizationService constructor.
@@ -58,7 +59,7 @@ class SynchronizationService implements SynchronizationServiceInterface
         $this->subscriberRepository = $subscriberRepository;
         $this->cleverReachRepository = $cleverReachRepository;
         $this->synchronizationProxy = $synchronizationProxy;
-        $this->groupId = 0;
+        $this->groupInfo = new GroupInfo(0);
     }
 
     /**
@@ -86,11 +87,11 @@ class SynchronizationService implements SynchronizationServiceInterface
     /**
      * Get client account ID from database.
      *
-     * @return int
+     * @return ClientInfo
      */
-    public function getClientId(): int
+    public function getClientInfo(): ClientInfo
     {
-        return (int)json_decode($this->cleverReachRepository->get('clientInfo')->getValue(), true)['id'];
+        return $this->cleverReachRepository->get('clientInfo');
     }
 
     /**
@@ -105,23 +106,22 @@ class SynchronizationService implements SynchronizationServiceInterface
             return;
         }
 
-        $data = new CleverReachInformation(CleverReachConfig::GROUP_INFO_NAME, $response->getBody());
+        $data = new GroupInfo(json_decode($response->getBody(), true)['id']);
         $this->cleverReachRepository->set($data);
     }
 
     /**
      * Get receiver group information from database.
      *
-     * @return int groupID
+     * @return GroupInfo groupID
      */
-    public function getGroupId(): int
+    public function getGroupInfo(): GroupInfo
     {
-        if ($this->groupId === 0) {
-            $groupInfo = $this->cleverReachRepository->get(CleverReachConfig::GROUP_INFO_NAME)->getValue();
-            $this->groupId = json_decode($groupInfo, true)['id'];
+        if ($this->groupInfo->getId() === 0) {
+            $this->groupInfo = $this->cleverReachRepository->get(CleverReachConfig::GROUP_INFO_NAME);
         }
 
-        return $this->groupId;
+        return $this->groupInfo;
     }
 
     /**
@@ -189,7 +189,7 @@ class SynchronizationService implements SynchronizationServiceInterface
      */
     public function sendReceivers(array $receivers): array
     {
-        return $this->synchronizationProxy->sendReceivers($receivers, $this->getGroupId())->decodeBodyToArray();
+        return $this->synchronizationProxy->sendReceivers($receivers, $this->getGroupInfo()->getId())->decodeBodyToArray();
     }
 
     /**
@@ -199,7 +199,7 @@ class SynchronizationService implements SynchronizationServiceInterface
      */
     public function deleteReceiver(string $email): void
     {
-        $this->synchronizationProxy->deleteReceiver($this->getGroupId(), $email);
+        $this->synchronizationProxy->deleteReceiver($this->getGroupInfo()->getId(), $email);
     }
 
     /**
@@ -227,7 +227,7 @@ class SynchronizationService implements SynchronizationServiceInterface
      */
     public function truncateGroup(): void
     {
-        $this->synchronizationProxy->truncateGroup($this->getGroupId());
+        $this->synchronizationProxy->truncateGroup($this->getGroupInfo()->getId());
     }
 
     /**

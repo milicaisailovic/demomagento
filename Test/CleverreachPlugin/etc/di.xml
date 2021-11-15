@@ -7,7 +7,7 @@
     <type name="Test\CleverreachPlugin\Service\Authorization\AuthorizationService">
         <arguments>
             <argument name="authorizationProxy" xsi:type="object">
-                Test\CleverreachPlugin\Service\Authorization\Http\AuthorizationProxy
+                Test\CleverreachPlugin\Service\Authorization\Http\AuthorizationProxy\Proxy
             </argument>
             <argument name="cleverReachRepository" xsi:type="object">
                 Test\CleverreachPlugin\Repository\CleverReachRepository

@@ -5,7 +5,11 @@ namespace Test\CleverreachPlugin\Repository;
 use Magento\Framework\App\ObjectManager;
 use Magento\Framework\Exception\LocalizedException;
 use Test\CleverreachPlugin\ResourceModel\CleverReachEntity;
-use Test\CleverreachPlugin\Service\Authorization\DTO\CleverReachInformation;
+use Test\CleverreachPlugin\Service\Authorization\DTO\AccessToken;
+use Test\CleverreachPlugin\Service\Authorization\DTO\ClientInfo;
+use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
+use Test\CleverreachPlugin\Service\DTO\CleverReachInformation;
+use Test\CleverreachPlugin\Service\Synchronization\DTO\GroupInfo;
 
 class CleverReachRepository
 {
@@ -43,16 +47,26 @@ class CleverReachRepository
      *
      * @param string $name
      *
-     * @return CleverReachInformation|null
+     * @return AccessToken|ClientInfo|GroupInfo|null
      */
-    public function get(string $name): ?CleverReachInformation
+    public function get(string $name)
     {
         try {
             $resource = $this->resourceEntity->select($name);
             if ($resource === null) {
                 return null;
             }
-            return new CleverReachInformation($resource['name'], $resource['value']);
+
+            switch ($name) {
+                case CleverReachConfig::ACCESS_TOKEN_NAME:
+                    return new AccessToken(json_decode($resource['value'], true)['value']);
+                case CleverReachConfig::CLIENT_INFO_NAME:
+                    return new ClientInfo(json_decode($resource['value'], true)['id']);
+                case CleverReachConfig::GROUP_INFO_NAME:
+                    return new GroupInfo(json_decode($resource['value'], true)['id']);
+                default:
+                    return null;
+            }
         } catch (LocalizedException $exception) {
             return null;
         }

@@ -4,7 +4,7 @@ namespace Test\CleverreachPlugin\ResourceModel;
 
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Model\ResourceModel\Db\AbstractDb;
-use Test\CleverreachPlugin\Service\Authorization\DTO\CleverReachInformation;
+use Test\CleverreachPlugin\Service\DTO\CleverReachInformation;
 
 class CleverReachEntity extends AbstractDb
 {
@@ -51,7 +51,7 @@ class CleverReachEntity extends AbstractDb
      */
     public function upsert(CleverReachInformation $information): void
     {
-        $data = ['name' => $information->getName(), 'value' => $information->getValue()];
+        $data = ['name' => $information->getName(), 'value' => json_encode($information->toArray())];
         $this->getConnection()->insertOnDuplicate($this->getMainTable(), $data);
     }
 
@@ -64,7 +64,7 @@ class CleverReachEntity extends AbstractDb
      */
     public function update(CleverReachInformation $information): void
     {
-        $data = ['value' => $information->getValue()];
+        $data = ['value' => json_encode($information->toArray())];
         $this->getConnection()->update($this->getMainTable(), $data, ['name = ?' => $information->getName()]);
     }
 }

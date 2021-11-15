@@ -6,6 +6,7 @@ use Test\CleverreachPlugin\Http\DTO\Request;
 use Test\CleverreachPlugin\Http\DTO\Response;
 use Test\CleverreachPlugin\Http\Proxy;
 use Test\CleverreachPlugin\Repository\CleverReachRepository;
+use Test\CleverreachPlugin\Service\Authorization\DTO\AccessToken;
 use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 
 class SynchronizationProxy extends Proxy
@@ -16,7 +17,7 @@ class SynchronizationProxy extends Proxy
     private $cleverReachRepository;
 
     /**
-     * @var string
+     * @var AccessToken
      */
     private $accessToken;
 
@@ -30,7 +31,7 @@ class SynchronizationProxy extends Proxy
     )
     {
         $this->cleverReachRepository = $cleverReachRepository;
-        $this->accessToken = '';
+        $this->accessToken = new AccessToken('');
     }
 
     /**
@@ -43,7 +44,7 @@ class SynchronizationProxy extends Proxy
     public function createGroup(string $groupName): Response
     {
         $body = ['name' => $groupName];
-        $queryParameters = ['token' => $this->getAccessToken()];
+        $queryParameters = ['token' => $this->getAccessToken()->getToken()];
 
         return $this->post(new Request('POST', CleverReachConfig::BASE_GROUP_URL, $body, $queryParameters));
     }
@@ -59,7 +60,7 @@ class SynchronizationProxy extends Proxy
     public function sendReceivers(array $receivers, int $groupId): Response
     {
         $url = CleverReachConfig::BASE_GROUP_URL . '/' . $groupId . '/receivers/upsertplus';
-        $queryParameters = ['token' => $this->getAccessToken()];
+        $queryParameters = ['token' => $this->getAccessToken()->getToken()];
 
         return $this->post(new Request('POST', $url, $receivers, $queryParameters));
     }
@@ -92,12 +93,12 @@ class SynchronizationProxy extends Proxy
     /**
      * Return access token and save it in private class field if token isn't previously saved.
      *
-     * @return string Access token
+     * @return AccessToken
      */
-    private function getAccessToken(): string
+    private function getAccessToken(): AccessToken
     {
-        if ($this->accessToken === '') {
-            $this->accessToken = $this->cleverReachRepository->get(CleverReachConfig::ACCESS_TOKEN_NAME)->getValue();
+        if ($this->accessToken->getToken() === '') {
+            $this->accessToken = $this->cleverReachRepository->get(CleverReachConfig::ACCESS_TOKEN_NAME);
         }
 
         return $this->accessToken;

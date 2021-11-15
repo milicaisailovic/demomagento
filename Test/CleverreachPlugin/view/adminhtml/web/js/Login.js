@@ -10,7 +10,7 @@ function openCleverReachPopUp(url, checkUrl) {
 }
 
 function loginSuccess(response) {
-    if (response !== 0) {
+    if (response[0] !== undefined) {
         clearInterval(checkLoginCall);
         popupWindow.close();
         window.location.replace(response[0]);
