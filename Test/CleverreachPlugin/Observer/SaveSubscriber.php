@@ -7,7 +7,7 @@ use Magento\Framework\Event\ObserverInterface;
 use Test\CleverreachPlugin\Service\Synchronization\Contracts\SynchronizationServiceInterface;
 use Test\CleverreachPlugin\Service\Synchronization\DTO\Receiver;
 
-abstract class SaveDataObserver implements ObserverInterface
+class SaveSubscriber implements ObserverInterface
 {
     /**
      * @var SynchronizationServiceInterface
@@ -15,7 +15,7 @@ abstract class SaveDataObserver implements ObserverInterface
     private $synchronizationService;
 
     /**
-     * SaveDataObserver constructor.
+     * SaveCustomer constructor.
      *
      * @param SynchronizationServiceInterface $synchronizationService
      */
@@ -31,15 +31,13 @@ abstract class SaveDataObserver implements ObserverInterface
      */
     public function execute(Observer $observer)
     {
-        $customer = $observer->getEvent()->getCustomer();
-        $deactivated = true;
-        if ($customer->getExtensionAttributes()->getIsSubscribed() !== null) {
-            $deactivated = $customer->getExtensionAttributes()->getIsSubscribed() ?
-                0 : strtotime($customer->getCreatedAt());
+        $subscriber = $observer->getEvent()->getSubscriber();
+        $deactivated = 0;
+        if ($subscriber->getSubscriberStatus() === 3) {
+            $deactivated = strtotime($subscriber->getChangeStatusAt());
         }
-
-        $receiver = new Receiver($customer->getId(), $customer->getEmail(), strtotime($customer->getCreatedAt()),
-            $deactivated, $customer->getFirstname(), $customer->getLastname());
+        $receiver = new Receiver($subscriber->getId(), $subscriber->getEmail(),
+            strtotime($subscriber->getChangeStatusAt()), $deactivated);
         $this->synchronizationService->sendReceivers([$receiver]);
     }
 }

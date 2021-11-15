@@ -3,7 +3,7 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Event/etc/events.xsd">
     <event name="adminhtml_customer_save_after">
         <observer name="cleverreach_customer_save_after"
-                  instance="Test\CleverreachPlugin\Observer\CustomerSaveAfter"/>
+                  instance="Test\CleverreachPlugin\Observer\SaveCustomer"/>
     </event>
     <event name="customer_delete_after">
         <observer name="cleverreach_customer_delete_after"
@@ -11,10 +11,18 @@
     </event>
     <event name="customer_register_success">
         <observer name="cleverreach_customer_register_success"
-                  instance="Test\CleverreachPlugin\Observer\CustomerRegisterSuccess"/>
+                  instance="Test\CleverreachPlugin\Observer\SaveCustomer"/>
     </event>
     <event name="customer_account_edited">
         <observer name="cleverreach_customer_account_edited"
                   instance="Test\CleverreachPlugin\Observer\CustomerAccountEdited"/>
+    </event>
+    <event name="newsletter_subscriber_save_after">
+        <observer name="cleverreach_newsletter_subscriber_save_after"
+                  instance="Test\CleverreachPlugin\Observer\SaveSubscriber"/>
+    </event>
+    <event name="newsletter_subscriber_delete_after">
+        <observer name="cleverreach_newsletter_subscriber_delete_after"
+                  instance="Test\CleverreachPlugin\Observer\SubscriberDeleteAfter"/>
     </event>
 </config>
