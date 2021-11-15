@@ -170,11 +170,11 @@ class Receiver implements \JsonSerializable
     }
 
     /**
-     * Return object ready for JSON encoding.
+     * Convert object to array.
      *
      * @return array
      */
-    public function jsonSerialize(): array
+    public function toArray(): array
     {
         $globalAttributes = [];
         if ($this->firstname !== '') {
@@ -191,13 +191,10 @@ class Receiver implements \JsonSerializable
     }
 
     /**
-     * Convert object to array.
-     *
      * @return array
      */
-    public function toArray(): array
+    public function jsonSerialize()
     {
-        return ['id' => $this->id, 'email' => $this->email, 'active' => $this->active,
-            'firstname' => $this->firstname, 'lastname' => $this->lastname];
+        return $this->toArray();
     }
 }

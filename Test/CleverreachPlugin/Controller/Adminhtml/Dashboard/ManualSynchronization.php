@@ -49,13 +49,11 @@ class ManualSynchronization extends Action implements HttpGetActionInterface
     {
         $response = $this->resultJsonFactory->create();
         try {
-            $this->synchronizationService->manualSynchronization();
-
-            return $response;
+            $this->synchronizationService->synchronize();
         } catch (SynchronizationException $e) {
             $response->setHttpResponseCode($e->getCode());
-
-            return $response;
         }
+
+        return $response;
     }
 }

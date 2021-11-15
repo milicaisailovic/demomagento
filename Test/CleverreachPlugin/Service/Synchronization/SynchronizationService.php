@@ -10,6 +10,7 @@ use Test\CleverreachPlugin\Service\Config\CleverReachConfig;
 use Test\CleverreachPlugin\Service\Synchronization\Contracts\SynchronizationServiceInterface;
 use Test\CleverreachPlugin\Service\Synchronization\DTO\GroupInfo;
 use Test\CleverreachPlugin\Service\Synchronization\DTO\Receiver;
+use Test\CleverreachPlugin\Service\Synchronization\Exceptions\CreateGroupUnsuccessful;
 use Test\CleverreachPlugin\Service\Synchronization\Exceptions\SynchronizationException;
 use Test\CleverreachPlugin\Service\Synchronization\Http\SynchronizationProxy;
 
@@ -65,7 +66,7 @@ class SynchronizationService implements SynchronizationServiceInterface
     /**
      * Performs initial synchronization after login on CleverReach API.
      *
-     * @throws SynchronizationException
+     * @throws SynchronizationException|CreateGroupUnsuccessful
      */
     public function initialSynchronization(): void
     {
@@ -74,14 +75,21 @@ class SynchronizationService implements SynchronizationServiceInterface
     }
 
     /**
-     * Performs manual synchronization.
+     * Synchronize receivers.
+     *
+     * @return void
      *
      * @throws SynchronizationException
      */
-    public function manualSynchronization(): void
+    public function synchronize(): void
     {
-        $this->truncateGroup();
-        $this->synchronize();
+        $numberOfReceivers = $this->getNumberOfReceivers();
+
+        $customerGroups = ceil($numberOfReceivers['customer'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
+        $subscriberGroups = ceil($numberOfReceivers['subscriber'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
+
+        $this->synchronizeReceivers($customerGroups, 'customer');
+        $this->synchronizeReceivers($subscriberGroups, 'subscriber');
     }
 
     /**
@@ -92,22 +100,6 @@ class SynchronizationService implements SynchronizationServiceInterface
     public function getClientInfo(): ClientInfo
     {
         return $this->cleverReachRepository->get('clientInfo');
-    }
-
-    /**
-     * Send request to API for creating new group and set receiver group information in database.
-     *
-     * @param string $groupName
-     */
-    public function createGroup(string $groupName): void
-    {
-        $response = $this->synchronizationProxy->createGroup($groupName);
-        if ($response->getStatus() !== 200) {
-            return;
-        }
-
-        $data = new GroupInfo(json_decode($response->getBody(), true)['id']);
-        $this->cleverReachRepository->set($data);
     }
 
     /**
@@ -140,47 +132,6 @@ class SynchronizationService implements SynchronizationServiceInterface
     }
 
     /**
-     * Get part of receivers from customers.
-     *
-     * @param int $groupNumber
-     *
-     * @return array Mapped customers to CleverReach receivers
-     */
-    public function getReceiversFromCustomers(int $groupNumber): array
-    {
-        $customers = $this->customerRepository->getCustomers($groupNumber);
-
-        return $this->mapCustomersToReceivers($customers);
-    }
-
-    /**
-     * Get part of receivers from subscribers.
-     *
-     * @param int $groupNumber
-     *
-     * @return array Mapped subscribers to CleverReach receivers
-     */
-    public function getReceiversFromSubscribers(int $groupNumber): array
-    {
-        $customers = $this->subscriberRepository->getSubscribers($groupNumber);
-
-        return $this->mapSubscribersToReceivers($customers);
-    }
-
-    /**
-     * Get number of receivers, separately customers and subscribers number.
-     *
-     * @return array
-     */
-    public function getNumberOfReceivers(): array
-    {
-        $number['customer'] = $this->customerRepository->numberOfCustomers();
-        $number['subscriber'] = $this->subscriberRepository->numberOfSubscribers();
-
-        return $number;
-    }
-
-    /**
      * Forward receivers to API proxy.
      *
      * @param array $receivers
@@ -210,40 +161,16 @@ class SynchronizationService implements SynchronizationServiceInterface
      *
      * @throws SynchronizationException
      */
-    public function synchronizeReceivers(int $numberOfGroups, string $type): void
+    private function synchronizeReceivers(int $numberOfGroups, string $type): void
     {
         for ($i = 1; $i <= $numberOfGroups; $i++) {
             $receivers = ($type === 'customer') ? $this->getReceiversFromCustomers($i) :
                 $this->getReceiversFromSubscribers($i);
             $response = $this->sendReceivers($receivers);
             if (isset($response['error'])) {
-                throw new SynchronizationException($response[''], $response['status']);
+                throw new SynchronizationException('', $response['error']['status']);
             }
         }
-    }
-
-    /**
-     * Delete all emails in API group.
-     */
-    public function truncateGroup(): void
-    {
-        $this->synchronizationProxy->truncateGroup($this->getGroupInfo()->getId());
-    }
-
-    /**
-     * Synchronize receivers.
-     *
-     * @throws SynchronizationException
-     */
-    private function synchronize()
-    {
-        $numberOfReceivers = $this->getNumberOfReceivers();
-
-        $customerGroups = ceil($numberOfReceivers['customer'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
-        $subscriberGroups = ceil($numberOfReceivers['subscriber'] / CleverReachConfig::NUMBER_OF_RECEIVERS_IN_GROUP);
-
-        $this->synchronizeReceivers($customerGroups, 'customer');
-        $this->synchronizeReceivers($subscriberGroups, 'subscriber');
     }
 
     /**
@@ -282,5 +209,64 @@ class SynchronizationService implements SynchronizationServiceInterface
         }
 
         return $receivers;
+    }
+
+    /**
+     * Send request to API for creating new group and set receiver group information in database.
+     *
+     * @param string $groupName
+     *
+     * @throws CreateGroupUnsuccessful
+     */
+    private function createGroup(string $groupName): void
+    {
+        $response = $this->synchronizationProxy->createGroup($groupName);
+        if ($response->getStatus() !== 200) {
+            throw new CreateGroupUnsuccessful("CleverReach group wasn't created.", $response->getStatus());
+        }
+
+        $data = new GroupInfo(json_decode($response->getBody(), true)['id']);
+        $this->cleverReachRepository->set($data);
+    }
+
+    /**
+     * Get part of receivers from customers.
+     *
+     * @param int $groupNumber
+     *
+     * @return array Mapped customers to CleverReach receivers
+     */
+    private function getReceiversFromCustomers(int $groupNumber): array
+    {
+        $customers = $this->customerRepository->getCustomers($groupNumber);
+
+        return $this->mapCustomersToReceivers($customers);
+    }
+
+    /**
+     * Get part of receivers from subscribers.
+     *
+     * @param int $groupNumber
+     *
+     * @return array Mapped subscribers to CleverReach receivers
+     */
+    private function getReceiversFromSubscribers(int $groupNumber): array
+    {
+        $customers = $this->subscriberRepository->getSubscribers($groupNumber);
+
+        return $this->mapSubscribersToReceivers($customers);
+    }
+
+    /**
+     * Get number of receivers, separately customers and subscribers number.
+     *
+     * @return array
+     */
+    private function getNumberOfReceivers(): array
+    {
+        $number['customer'] = $this->customerRepository->numberOfCustomers();
+        $number['subscriber'] = $this->subscriberRepository->numberOfSubscribers();
+
+        return $number;
     }
 }

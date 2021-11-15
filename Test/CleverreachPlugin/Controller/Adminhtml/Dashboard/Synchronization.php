@@ -8,6 +8,7 @@ use Magento\Framework\App\Action\HttpGetActionInterface;
 use Magento\Framework\Controller\Result\Json;
 use Magento\Framework\Controller\Result\JsonFactory;
 use Test\CleverreachPlugin\Service\Synchronization\Contracts\SynchronizationServiceInterface;
+use Test\CleverreachPlugin\Service\Synchronization\Exceptions\CreateGroupUnsuccessful;
 use Test\CleverreachPlugin\Service\Synchronization\Exceptions\SynchronizationException;
 
 class Synchronization extends Action implements HttpGetActionInterface
@@ -50,12 +51,10 @@ class Synchronization extends Action implements HttpGetActionInterface
         $response = $this->resultJsonFactory->create();
         try {
             $this->synchronizationService->initialSynchronization();
-
-            return $response;
-        } catch (SynchronizationException $e) {
+        } catch (SynchronizationException | CreateGroupUnsuccessful $e) {
             $response->setHttpResponseCode($e->getCode());
-
-            return $response;
         }
+
+        return $response;
     }
 }

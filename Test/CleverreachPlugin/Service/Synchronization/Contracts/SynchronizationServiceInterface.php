@@ -13,23 +13,16 @@ interface SynchronizationServiceInterface
     public function initialSynchronization(): void;
 
     /**
-     * Performs manual synchronization.
+     * Performs synchronization.
      */
-    public function manualSynchronization(): void;
+    public function synchronize(): void;
 
     /**
      * Get client account ID from database.
      *
-     * @return int
+     * @return ClientInfo
      */
     public function getClientInfo(): ClientInfo;
-
-    /**
-     * Send request to API for creating new group and set receiver group information in database.
-     *
-     * @param string $groupName
-     */
-    public function createGroup(string $groupName): void;
 
     /**
      * Get receiver group information from database.
@@ -46,31 +39,6 @@ interface SynchronizationServiceInterface
     public function sendEditedInformation(string $email): void;
 
     /**
-     * Get part of receivers from customers.
-     *
-     * @param int $groupNumber
-     *
-     * @return array Mapped customers to CleverReach receivers
-     */
-    public function getReceiversFromCustomers(int $groupNumber): array;
-
-    /**
-     * Get part of receivers from subscribers.
-     *
-     * @param int $groupNumber
-     *
-     * @return array Mapped subscribers to CleverReach receivers
-     */
-    public function getReceiversFromSubscribers(int $groupNumber): array;
-
-    /**
-     * Get number of receivers, separately customers and subscribers number.
-     *
-     * @return array
-     */
-    public function getNumberOfReceivers(): array;
-
-    /**
      * Forward receivers to API proxy.
      *
      * @param array $receivers
@@ -85,17 +53,4 @@ interface SynchronizationServiceInterface
      * @param string $email
      */
     public function deleteReceiver(string $email): void;
-
-    /**
-     * Get receivers from database and send them to API.
-     *
-     * @param int $numberOfGroups
-     * @param string $type
-     */
-    public function synchronizeReceivers(int $numberOfGroups, string $type): void;
-
-    /**
-     * Delete all emails in API group.
-     */
-    public function truncateGroup(): void;
 }
