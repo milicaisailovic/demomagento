@@ -2,7 +2,7 @@
 
 namespace Test\CleverreachPlugin\Service\Synchronization\DTO;
 
-class Receiver implements \JsonSerializable
+class Receiver
 {
     /**
      * @var int
@@ -188,13 +188,5 @@ class Receiver implements \JsonSerializable
         return ['id' => $this->id, 'email' => $this->email, 'active' => $this->active,
             'registered' => $this->registered, 'deactivated' => $this->deactivated,
             'activated' => $this->registered, 'global_attributes' => $globalAttributes];
-    }
-
-    /**
-     * @return array
-     */
-    public function jsonSerialize()
-    {
-        return $this->toArray();
     }
 }

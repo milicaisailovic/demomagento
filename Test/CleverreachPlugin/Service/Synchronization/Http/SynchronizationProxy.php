@@ -61,8 +61,12 @@ class SynchronizationProxy extends Proxy
     {
         $url = CleverReachConfig::BASE_GROUP_URL . '/' . $groupId . '/receivers/upsertplus';
         $queryParameters = ['token' => $this->getAccessToken()->getToken()];
+        $convertedReceivers = [];
+        foreach ($receivers as $receiver) {
+            $convertedReceivers[] = $receiver->toArray();
+        }
 
-        return $this->post(new Request('POST', $url, $receivers, $queryParameters));
+        return $this->post(new Request('POST', $url, $convertedReceivers, $queryParameters));
     }
 
     /**

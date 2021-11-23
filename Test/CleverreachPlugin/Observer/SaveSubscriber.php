@@ -4,6 +4,7 @@ namespace Test\CleverreachPlugin\Observer;
 
 use Magento\Framework\Event\Observer;
 use Magento\Framework\Event\ObserverInterface;
+use Magento\Newsletter\Model\Subscriber;
 use Test\CleverreachPlugin\Service\Synchronization\Contracts\SynchronizationServiceInterface;
 use Test\CleverreachPlugin\Service\Synchronization\DTO\Receiver;
 
@@ -33,7 +34,7 @@ class SaveSubscriber implements ObserverInterface
     {
         $subscriber = $observer->getEvent()->getSubscriber();
         $deactivated = 0;
-        if ($subscriber->getSubscriberStatus() === 3) {
+        if ($subscriber->getSubscriberStatus() === Subscriber::STATUS_UNSUBSCRIBED) {
             $deactivated = strtotime($subscriber->getChangeStatusAt());
         }
         $receiver = new Receiver($subscriber->getId(), $subscriber->getEmail(),
